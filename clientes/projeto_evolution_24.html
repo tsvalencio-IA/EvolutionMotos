@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Portal - Evolution Motors</title>
+    <!-- Firebase SDKs (Somente BD) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --bs-body-bg: #212529; 
+            --bs-dark-card: #343a40; 
+            --bs-accent: #e65100; 
+        }
+        body { 
+            background-color: var(--bs-body-bg); 
+            color: #ffffff; /* Letras Brancas Absolutas */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            min-height: 100vh; display: flex; flex-direction: column; 
+        }
+        
+        h1, h2, h3, h4, h5, h6, p, label, small, div, span { color: #ffffff; }
+
+        .card { background-color: var(--bs-dark-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; }
+        .form-control { background-color: #495057 !important; color: white !important; border: 1px solid #6c757d; }
+        .form-control:focus { border-color: var(--bs-accent); box-shadow: none; }
+        .form-control::placeholder { color: #adb5bd !important; }
+        
+        .btn-primary { background-color: var(--bs-accent); border: none; font-weight: bold; color: white !important;}
+        
+        .kpi-card { padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .kpi-gastos { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border: 1px solid #2a5298;}
+        
+        .os-box { background-color: #3f464e; padding: 20px; border-radius: 12px; border-left: 5px solid var(--bs-accent); margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);}
+        
+        .chat-app { background-color: var(--bs-dark-card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; height: 400px; display: flex; flex-direction: column; }
+        .chat-view { flex-grow: 1; padding: 15px; overflow-y: auto; background-color: #212529; }
+        .msg { max-width: 80%; padding: 12px; border-radius: 12px; margin-bottom: 10px; font-size: 0.95rem; }
+        .msg.cliente { background-color: var(--bs-accent); color: white; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 0; }
+        .msg.admin { background-color: #495057; color: white; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 0; }
+        .msg small { display: block; text-align: right; opacity: 0.7; font-size: 0.7rem; margin-top: 4px; }
+        .chat-send { display: flex; padding: 10px; background-color: var(--bs-dark-card); border-top: 1px solid rgba(255,255,255,0.1); }
+        
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
+        .modal-content { background-color: var(--bs-dark-card); color: white; border: 1px solid #555; }
+        .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); background-color: var(--bs-body-bg); }
+        .btn-close { filter: invert(1); }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- TELA DE LOGIN DO CLIENTE -->
+    <div id="loginScreen" class="d-flex flex-column justify-content-center align-items-center vh-100 w-100 p-3">
+        <div class="text-center mb-4">
+            <h1 style="color: var(--bs-accent); font-weight: 900; letter-spacing: 2px;">EVOLUTION</h1>
+            <h5 class="text-white-50">Portal Exclusivo do Cliente</h5>
+        </div>
+        <div class="card p-4 shadow-lg w-100" style="max-width: 400px;">
+            <form id="formLoginCliente">
+                <div class="mb-3">
+                    <label class="form-label text-white fw-bold">E-mail Cadastrado</label>
+                    <input type="email" class="form-control form-control-lg" id="loginEmail" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-white fw-bold">Senha de Acesso</label>
+                    <input type="password" class="form-control form-control-lg" id="loginSenha" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold" id="btnEntrarApp">ACESSAR MINHAS MOTOS</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PAINEL PRINCIPAL DO CLIENTE -->
+    <div id="appPanel" class="flex-column" style="display: none; flex-grow: 1; min-height: 100vh;">
+        <nav class="navbar navbar-dark px-4 py-3 border-bottom" style="border-color: var(--bs-accent) !important;">
+            <span class="navbar-brand fw-bold" style="color: var(--bs-accent) !important;"><i class="bi bi-speedometer me-2"></i> Meu App</span>
+            <button class="btn btn-outline-light btn-sm fw-bold" onclick="sairDoApp()"><i class="bi bi-box-arrow-right"></i> Sair</button>
+        </nav>
+        
+        <div class="container mt-4 pb-5 flex-grow-1">
+            <h3 id="boasVindas" class="mb-4 fw-bold"></h3>
+            
+            <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                    <div class="kpi-card kpi-gastos">
+                        <p class="text-white-50 fw-bold mb-2"><i class="bi bi-wallet2"></i> Investimento Histórico</p>
+                        <h2 id="kpiGastoTotal" class="fw-bold mb-0">R$ 0,00</h2>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="kpi-card shadow" id="kpiAlerta">
+                        <p class="text-white-50 fw-bold mb-2"><i class="bi bi-shield-check"></i> Status da Garagem</p>
+                        <h2 id="kpiStatus" class="fw-bold mb-1">Analisando...</h2>
+                        <small id="kpiSubStatus" class="text-white"></small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Esquerda: Serviços e Motos -->
+                <div class="col-lg-6 mb-4">
+                    <h4 class="mb-3 border-bottom pb-2" style="border-color: #555 !important; color: var(--bs-accent) !important;"><i class="bi bi-tools"></i> Meus Serviços</h4>
+                    <div id="boxServicos" class="mb-5"></div>
+
+                    <h4 class="mb-3 border-bottom pb-2" style="border-color: #555 !important; color: var(--bs-accent) !important;"><i class="bi bi-motorcycle"></i> Minhas Motos</h4>
+                    <div class="row g-3" id="boxMotos"></div>
+                </div>
+
+                <!-- Direita: Chat -->
+                <div class="col-lg-6 mb-4">
+                    <h4 class="mb-3 border-bottom pb-2" style="border-color: #555 !important; color: var(--bs-accent) !important;"><i class="bi bi-chat-right-text"></i> Fale com a Oficina</h4>
+                    <div class="chat-app shadow-lg">
+                        <div class="chat-view d-flex flex-column" id="chatAreaMsg"></div>
+                        <div class="chat-send">
+                            <input type="text" class="form-control rounded-pill px-3" id="chatInputMsg" placeholder="Envie sua mensagem...">
+                            <button class="btn btn-primary rounded-circle ms-2 fw-bold" style="width: 45px; height: 45px;" onclick="enviarMensagemParaOficina()"><i class="bi bi-send-fill"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Checklist Cliente -->
+    <div class="modal fade" id="modalChecklistCliente" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-clipboard-check text-success me-2"></i> Inspeção de Recebimento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="corpoLaudo"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAq6gEJlUGuzJmrNf-lVY0cqdOWsJ9xNeo",
+            authDomain: "evolution-179d0.firebaseapp.com",
+            projectId: "evolution-179d0",
+            storageBucket: "evolution-179d0.firebasestorage.app",
+            messagingSenderId: "349908951188",
+            appId: "1:349908951188:web:457832d484a83f45b19481"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        let idMeuCliente = null;
+        let minhasMotos = [];
+        let meusServicos = [];
+
+        function showToast(msg, type='info') {
+            const tc = document.getElementById('toastContainer');
+            const bg = type==='error'?'bg-danger':(type==='success'?'bg-success':'bg-primary');
+            tc.innerHTML = `<div class="toast show align-items-center text-white ${bg} border-0 shadow-lg p-2"><div class="d-flex"><div class="toast-body fw-bold">${msg}</div></div></div>`;
+            setTimeout(()=>tc.innerHTML='', 4000);
+        }
+
+        document.getElementById('formLoginCliente').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const em = document.getElementById('loginEmail').value.trim();
+            const pw = document.getElementById('loginSenha').value.trim();
+            const btn = document.getElementById('btnEntrarApp');
+            btn.innerHTML = "Acessando banco...";
+            btn.disabled = true;
+
+            try {
+                const snapshot = await db.collection('clientes').where('email', '==', em).where('senhaProv', '==', pw).get();
+                
+                if (snapshot.empty) {
+                    showToast("E-mail ou senha incorretos.", "error");
+                    btn.innerHTML = "ACESSAR MINHAS MOTOS";
+                    btn.disabled = false;
+                } else {
+                    idMeuCliente = snapshot.docs[0].id;
+                    const dados = snapshot.docs[0].data();
+                    
+                    // A mágica: display none na tela inteira de login, e display flex pro app
+                    document.getElementById('loginScreen').classList.remove('d-flex');
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('appPanel').style.display = 'flex';
+                    document.getElementById('boasVindas').innerHTML = `Olá, <span style="color: var(--bs-accent);">${dados.nome}</span>!`;
+                    
+                    iniciarAppEmTempoReal();
+                    showToast("Bem-vindo à garagem virtual!", "success");
+                }
+            } catch (err) {
+                showToast("Erro na conexão.", "error");
+                btn.innerHTML = "ACESSAR MINHAS MOTOS";
+                btn.disabled = false;
+            }
+        });
+
+        function sairDoApp() { window.location.reload(); }
+
+        function iniciarAppEmTempoReal() {
+            db.collection('motos').where('clienteId', '==', idMeuCliente).onSnapshot(snap => {
+                minhasMotos = snap.docs.map(d=>({id: d.id, ...d.data()})); renderizarPainel();
+            });
+            db.collection('servicos').where('clienteId', '==', idMeuCliente).onSnapshot(snap => {
+                meusServicos = snap.docs.map(d=>({id: d.id, ...d.data()})); renderizarPainel();
+            });
+            db.collection('mensagens').where('clienteId', '==', idMeuCliente).orderBy('timestamp', 'asc').onSnapshot(snap => {
+                const area = document.getElementById('chatAreaMsg');
+                area.innerHTML = '';
+                if(snap.empty) {
+                    area.innerHTML = '<div class="text-center text-white-50 mt-5"><i class="bi bi-chat-square-dots fs-2"></i><br>Envie a primeira mensagem para a oficina!</div>';
+                } else {
+                    snap.docs.forEach(doc => {
+                        const m = doc.data();
+                        const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+                        area.innerHTML += `<div class="msg ${m.sender}">${m.text}<small>${time}</small></div>`;
+                    });
+                    area.scrollTop = area.scrollHeight;
+                }
+            });
+        }
+
+        function renderizarPainel() {
+            const boxM = document.getElementById('boxMotos');
+            if(minhasMotos.length === 0) boxM.innerHTML = '<div class="col-12"><p class="text-white-50">Sem motos registradas.</p></div>';
+            else {
+                boxM.innerHTML = minhasMotos.map(m => `
+                    <div class="col-12">
+                        <div class="p-3 bg-dark rounded border border-secondary d-flex align-items-center gap-3">
+                            ${m.img?`<img src="${m.img}" width="80" class="rounded border" style="border-color: var(--bs-accent) !important;">`:'<div class="p-3 rounded" style="background:#212529"><i class="bi bi-motorcycle fs-2 text-white-50"></i></div>'}
+                            <div>
+                                <h5 class="fw-bold mb-1" style="color: var(--bs-accent);">${m.modelo}</h5>
+                                <span class="badge bg-secondary mb-1">${m.placa}</span>
+                                <p class="text-white-50 mb-0 small">KM: ${m.km || '0'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const boxOS = document.getElementById('boxServicos');
+            const osAndamento = meusServicos.filter(s => s.status !== 'Concluido' && s.status !== 'Cancelado');
+            if(osAndamento.length === 0) boxOS.innerHTML = '<div class="p-4 bg-dark rounded border border-secondary text-center text-white-50"><i class="bi bi-check-circle fs-2 text-success"></i><br>Nenhuma moto na oficina no momento.</div>';
+            else {
+                boxOS.innerHTML = osAndamento.map(os => {
+                    const mot = minhasMotos.find(x=>x.id===os.motoId);
+                    const btn = os.check ? `<button class="btn btn-outline-light btn-sm w-100 fw-bold mt-3" onclick="abrirLaudo('${os.id}')"><i class="bi bi-search me-1"></i> Ver Inspeção</button>` : '';
+                    return `
+                    <div class="os-box">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="fw-bold mb-0">${os.desc}</h5>
+                            <span class="badge bg-primary fs-6">${os.status}</span>
+                        </div>
+                        <p class="text-info fw-bold mb-1"><i class="bi bi-motorcycle me-1"></i> ${mot?mot.placa:'-'} (${mot?mot.modelo:'-'})</p>
+                        <p class="text-white-50 small mb-0"><i class="bi bi-calendar-check me-1"></i> Deixada em: ${new Date(os.data).toLocaleDateString('pt-BR')}</p>
+                        <p class="text-success fw-bold fs-5 mt-2 mb-0">Total: R$ ${os.total.toFixed(2)}</p>
+                        ${btn}
+                    </div>`;
+                }).join('');
+            }
+
+            const gastoHistorico = meusServicos.filter(s=>s.status==='Concluido').reduce((acc, os) => acc + os.total, 0);
+            document.getElementById('kpiGastoTotal').innerText = `R$ ${gastoHistorico.toFixed(2)}`;
+
+            let temAtraso = false;
+            meusServicos.filter(s=>s.status==='Concluido').forEach(os => {
+                const difMeses = (new Date() - new Date(os.data)) / (1000*60*60*24*30);
+                if(difMeses > 6) temAtraso = true;
+            });
+
+            const cardAlerta = document.getElementById('kpiAlerta');
+            if(temAtraso) {
+                cardAlerta.style.background = "linear-gradient(135deg, #b71c1c, #e53935)";
+                document.getElementById('kpiStatus').innerText = "Alerta: Revisão Passada";
+                document.getElementById('kpiSubStatus').innerText = "Você tem motos que não revisam há mais de 6 meses.";
+            } else {
+                cardAlerta.style.background = "linear-gradient(135deg, #2e7d32, #43a047)";
+                document.getElementById('kpiStatus').innerText = "Tudo Perfeito!";
+                document.getElementById('kpiSubStatus').innerText = "Manutenções em dia.";
+            }
+        }
+
+        window.abrirLaudo = function(idOs) {
+            const os = meusServicos.find(x=>x.id===idOs);
+            if(!os || !os.check) return;
+            const chk = os.check;
+            const checkIcon = (val) => val ? '<i class="bi bi-check-circle-fill text-success fs-5"></i>' : '<i class="bi bi-x-circle-fill text-danger fs-5"></i>';
+            document.getElementById('corpoLaudo').innerHTML = `
+                <div class="p-3 bg-dark rounded border border-secondary mb-3"><p class="mb-0 fw-bold"><i class="bi bi-fuel-pump text-warning me-2"></i> Combustível: <span class="text-white-50">${chk.comb}</span></p></div>
+                <div class="d-flex align-items-center mb-2">${checkIcon(chk.painel)} <span class="ms-2 fw-bold">Painel / Elétrica</span></div>
+                <div class="d-flex align-items-center mb-2">${checkIcon(chk.pneus)} <span class="ms-2 fw-bold">Estado dos Pneus</span></div>
+                <div class="d-flex align-items-center mb-3">${checkIcon(chk.care)} <span class="ms-2 fw-bold">Carenagem / Estrutura</span></div>
+                <hr class="border-secondary">
+                <p class="text-warning fw-bold mb-1">Avarias prévias:</p>
+                <div class="p-3 bg-dark rounded fst-italic text-white-50 border border-secondary">"${chk.obs || 'Nenhuma avaria declarada.'}"</div>
+            `;
+            new bootstrap.Modal(document.getElementById('modalChecklistCliente')).show();
+        };
+
+        window.enviarMensagemParaOficina = async function() {
+            const val = document.getElementById('chatInputMsg').value.trim();
+            if(!val) return;
+            await db.collection('mensagens').add({ clienteId: idMeuCliente, sender: 'cliente', text: val, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            document.getElementById('chatInputMsg').value = '';
+        }
+    </script>
+</body>
+</html>
