@@ -13,8 +13,8 @@
         .login-card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
         .form-control { background-color: #0f172a !important; border: 1px solid #334155 !important; color: #fff !important; padding: 12px 15px; border-radius: 8px; }
         .form-control:focus { border-color: #e65100 !important; box-shadow: 0 0 0 0.25rem rgba(230, 81, 0, 0.25); }
-        .btn-primary { background-color: #e65100; border: none; font-weight: bold; padding: 12px; border-radius: 8px; font-size: 1.1rem; }
-        .btn-primary:hover { background-color: #c94400; }
+        .btn-primary { background-color: #e65100; border: none; font-weight: bold; padding: 12px; border-radius: 8px; font-size: 1.1rem; transition: 0.3s; }
+        .btn-primary:hover { background-color: #c94400; transform: translateY(-2px); }
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
     </style>
 </head>
@@ -28,14 +28,14 @@
         
         <form onsubmit="fazerLogin(event)">
             <div class="mb-3 text-start">
-                <label class="form-label text-white-50 fw-bold small text-uppercase">Usuário da Oficina</label>
+                <label class="form-label text-white-50 fw-bold small text-uppercase">Utilizador da Oficina</label>
                 <div class="input-group">
                     <span class="input-group-text bg-dark border-secondary text-white-50"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control" id="usr" required placeholder="Digite seu usuário">
+                    <input type="text" class="form-control" id="usr" required placeholder="Digite o seu utilizador">
                 </div>
             </div>
             <div class="mb-4 text-start">
-                <label class="form-label text-white-50 fw-bold small text-uppercase">Senha de Acesso</label>
+                <label class="form-label text-white-50 fw-bold small text-uppercase">Palavra-passe</label>
                 <div class="input-group">
                     <span class="input-group-text bg-dark border-secondary text-white-50"><i class="bi bi-key"></i></span>
                     <input type="password" class="form-control" id="pwd" required placeholder="••••••••">
@@ -63,7 +63,7 @@
         function showToast(msg, type='error') {
             const bg = type==='error'?'bg-danger':'bg-success';
             const t = document.createElement('div');
-            t.innerHTML = `<div class="toast align-items-center text-white ${bg} border-0 show p-2 mt-2" role="alert"><div class="d-flex"><div class="toast-body fw-bold">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
+            t.innerHTML = `<div class="toast align-items-center text-white ${bg} border-0 show p-3 mt-2 shadow-lg rounded" role="alert"><div class="d-flex"><div class="toast-body fw-bold">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
             document.getElementById('toastContainer').appendChild(t.firstChild);
             setTimeout(() => document.getElementById('toastContainer').firstChild?.remove(), 4000);
         }
@@ -79,13 +79,13 @@
             try {
                 const snapshot = await db.collection('oficinas').where('usuario', '==', usr).where('senha', '==', pwd).get();
                 if(snapshot.empty) {
-                    showToast('Credenciais inválidas ou não localizadas.');
+                    showToast('Credenciais inválidas ou não localizadas na plataforma.');
                 } else {
                     const doc = snapshot.docs[0];
                     const dados = doc.data();
                     
                     if(dados.status === 'Bloqueado') {
-                        showToast('Licença Bloqueada. Contate a thIAguinho Soluções.');
+                        showToast('Licença Bloqueada. Contacte a thIAguinho Soluções.');
                     } else {
                         sessionStorage.setItem('evo_tenant_id', doc.id);
                         sessionStorage.setItem('evo_tenant_nome', dados.nomeFantasia);
@@ -95,7 +95,7 @@
                 }
             } catch (err) {
                 console.error(err);
-                showToast('Erro de conexão com a Nuvem.');
+                showToast('Erro de conexão com a Nuvem. Verifique a sua internet.');
             }
             btn.innerHTML = 'ENTRAR NO SISTEMA';
             btn.disabled = false;
