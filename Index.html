@@ -3,694 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evolution SaaS - Gestão de Oficina</title>
-    
-    <!-- Firebase SDKs -->
+    <title>Evolution SaaS - Login da Oficina</title>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Bootstrap CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    
     <style>
-        /* === IDENTIDADE VISUAL MANTIDA (DESIGN ORIGINAL) === */
-        :root {
-            --bs-body-bg: #212529; 
-            --bs-dark-card: #343a40; 
-            --bs-accent: #e65100; 
-            --text-main: #ffffff;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bs-body-bg);
-            color: var(--text-main) !important; 
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Garantia absoluta de legibilidade em ecrãs escuros */
-        h1, h2, h3, h4, h5, h6, p, label, span, div, th, td, i, small { color: var(--text-main) !important; }
-
-        .navbar { background-color: var(--bs-dark-card) !important; border-bottom: 2px solid var(--bs-accent); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .navbar-brand { font-weight: 900; letter-spacing: 1px; text-transform: uppercase;}
-        .navbar-nav .nav-link { font-weight: 500; padding: 10px 15px; opacity: 0.7; transition: all 0.3s; }
-        .navbar-nav .nav-link:hover { opacity: 1; color: var(--bs-accent) !important; }
-        .navbar-nav .nav-link.active { background-color: var(--bs-accent); color: #fff !important; border-radius: 8px; opacity: 1; }
-        .navbar-toggler-icon { filter: invert(1); }
-        
-        .container-fluid { padding-top: 20px; flex-grow: 1; }
-        
-        /* Cartões SaaS Premium */
-        .card { background-color: var(--bs-dark-card); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
-        .card-header { background-color: transparent; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; font-weight: bold; }
-        
-        /* Botões */
-        .btn-primary { background-color: var(--bs-accent); border-color: var(--bs-accent); font-weight: bold; }
-        .btn-primary:hover { background-color: #c94400; border-color: #c94400; }
-        .btn-light { background-color: #f8f9fa; color: #212529 !important; font-weight: bold; border: none; }
-        
-        /* Formulários */
-        .form-control, .form-select, textarea { background-color: #1e2124 !important; border: 1px solid #495057 !important; border-radius: 8px; padding: 10px 15px;}
-        .form-control:focus, .form-select:focus { border-color: var(--bs-accent) !important; box-shadow: 0 0 0 0.2rem rgba(230, 81, 0, 0.25); }
-        .form-control::placeholder { color: #6c757d !important; }
-
-        /* Tabelas */
-        .table { margin-top: 10px; }
-        .table th { background-color: #1e2124 !important; border-bottom: 2px solid var(--bs-accent) !important; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;}
-        .table tbody tr { border-bottom: 1px solid #343a40; transition: background-color 0.2s; }
-        .table tbody tr:hover { background-color: rgba(255,255,255,0.02) !important; }
-        .table td { vertical-align: middle; font-size: 0.95rem; }
-
-        /* Modais */
-        .modal-content { background-color: var(--bs-dark-card); border: 1px solid #495057; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);}
-        .modal-header { background-color: var(--bs-accent); border-bottom: none; border-radius: 15px 15px 0 0; }
-        .btn-close { filter: invert(1); }
-
-        /* Dashboard KPIs */
-        .kpi-box { padding: 25px; border-radius: 12px; background: linear-gradient(145deg, #2b3035 0%, #1e2124 100%); border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;}
-        .kpi-box i { position: absolute; right: -10px; bottom: -10px; font-size: 6rem; opacity: 0.05; color: #fff;}
-        .kpi-value { font-size: 2.5rem; font-weight: 900; margin: 10px 0 0 0; color: var(--bs-accent) !important;}
-
-        /* Status OS */
-        .badge-status { padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; letter-spacing: 0.5px; }
-        .os-card { border-left: 6px solid var(--bs-accent); background-color: #2b3035; border-radius: 8px; padding: 20px; transition: transform 0.2s;}
-        .os-card:hover { transform: translateY(-3px); }
-
-        /* Chat App */
-        .chat-container { height: 550px; display: flex; flex-direction: column; background-color: #1e2124; border-radius: 12px; border: 1px solid #495057; overflow: hidden;}
-        .chat-messages { flex-grow: 1; overflow-y: auto; padding: 20px; }
-        .message { margin-bottom: 15px; max-width: 75%; padding: 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4;}
-        .message.admin { background-color: var(--bs-accent); align-self: flex-end; margin-left: auto; border-bottom-right-radius: 2px; }
-        .message.cliente { background-color: #343a40; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 2px; border: 1px solid #495057;}
-        .chat-input { padding: 15px; background-color: #2b3035; border-top: 1px solid #495057; }
-
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+        body { background-color: #0f172a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; color: #fff; }
+        .login-card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .form-control { background-color: #0f172a !important; border: 1px solid #334155 !important; color: #fff !important; padding: 12px 15px; border-radius: 8px; }
+        .form-control:focus { border-color: #e65100 !important; box-shadow: 0 0 0 0.25rem rgba(230, 81, 0, 0.25); }
+        .btn-primary { background-color: #e65100; border: none; font-weight: bold; padding: 12px; border-radius: 8px; font-size: 1.1rem; }
+        .btn-primary:hover { background-color: #c94400; }
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
     </style>
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ECRÃ DE LOGIN FIXO (SEM BLOQUEIOS) -->
-    <div id="loginScreen" class="d-flex flex-column justify-content-center align-items-center vh-100">
-        <div class="card p-5 shadow-lg" style="width: 100%; max-width: 450px;">
-            <div class="text-center mb-4">
-                <i class="bi bi-hexagon-half display-1 text-accent" style="color: var(--bs-accent);"></i>
-                <h2 class="mt-3 fw-bold" style="color: var(--bs-accent) !important;">EVOLUTION SAAS</h2>
-                <p class="text-white-50">Portal de Gestão de Oficina</p>
-            </div>
-            <form onsubmit="iniciarSessao(event)">
-                <div class="mb-3">
-                    <label class="form-label fw-bold small text-uppercase text-white-50">Utilizador</label>
-                    <input type="text" class="form-control form-control-lg" id="loginUser" required placeholder="admin">
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fw-bold small text-uppercase text-white-50">Palavra-passe</label>
-                    <input type="password" class="form-control form-control-lg" id="loginPass" required placeholder="123">
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg w-100 py-3 mt-2 shadow">INICIAR SESSÃO</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- PAINEL SAAS (DASHBOARD) -->
-    <div id="adminPanel" class="d-flex flex-column h-100" style="display: none;">
-        <nav class="navbar navbar-expand-xl py-3">
-            <div class="container-fluid px-4">
-                <a class="navbar-brand fs-4" href="#"><i class="bi bi-hexagon-fill me-2"></i>EVOLUTION</a>
-                <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2 ms-4">
-                        <li class="nav-item"><a class="nav-link active" href="#" onclick="mudarSeparador('dashboard')"><i class="bi bi-grid-1x2-fill me-1"></i> Resumo</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" onclick="mudarSeparador('agendamentos')"><i class="bi bi-tools me-1"></i> O.S. & Serviços</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" onclick="mudarSeparador('estoque')"><i class="bi bi-box-seam-fill me-1"></i> Stock</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" onclick="mudarSeparador('clientesMotos')"><i class="bi bi-people-fill me-1"></i> Clientes</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" onclick="mudarSeparador('compras')"><i class="bi bi-receipt me-1"></i> Faturas/NF</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" onclick="mudarSeparador('financeiro')"><i class="bi bi-bank me-1"></i> Financeiro</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" onclick="mudarSeparador('mensagens')"><i class="bi bi-chat-left-dots-fill me-1"></i> CRM Chat</a></li>
-                        <!-- Novo Módulo: IA -->
-                        <li class="nav-item"><a class="nav-link text-warning" href="#" onclick="mudarSeparador('ia_assistant')"><i class="bi bi-robot me-1"></i> Assistente IA</a></li>
-                    </ul>
-                    <button class="btn btn-outline-danger fw-bold border-0 px-4" onclick="terminarSessao()"><i class="bi bi-power me-2"></i> Sair</button>
+    <div class="login-card text-center">
+        <i class="bi bi-hexagon-fill display-1" style="color: #e65100;"></i>
+        <h2 class="fw-bold mt-3 mb-1">EVOLUTION</h2>
+        <p class="text-white-50 mb-4">Plataforma de Gestão Automotiva</p>
+        
+        <form onsubmit="fazerLogin(event)">
+            <div class="mb-3 text-start">
+                <label class="form-label text-white-50 fw-bold small text-uppercase">Usuário da Oficina</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-white-50"><i class="bi bi-person"></i></span>
+                    <input type="text" class="form-control" id="usr" required placeholder="Digite seu usuário">
                 </div>
             </div>
-        </nav>
-
-        <div class="container-fluid mt-4 flex-grow-1 px-4">
-            
-            <!-- MÓDULO 1: DASHBOARD EM TEMPO REAL -->
-            <section id="dashboard" class="admin-section">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="fw-bold"><i class="bi bi-speedometer2 me-2 text-accent" style="color: var(--bs-accent);"></i> Visão Geral da Oficina</h3>
-                    <span class="badge bg-success p-2 fs-6"><i class="bi bi-circle-fill text-white me-1" style="font-size: 0.5rem;"></i> Sistema Online</span>
-                </div>
-                
-                <div class="row g-4 mb-4">
-                    <div class="col-md-3">
-                        <div class="kpi-box shadow-sm">
-                            <i class="bi bi-currency-dollar"></i>
-                            <p class="text-white-50 fw-bold mb-0 text-uppercase small">Faturação (Mês)</p>
-                            <h2 class="kpi-value" id="kpiFaturacao">R$ 0.00</h2>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="kpi-box shadow-sm">
-                            <i class="bi bi-tools"></i>
-                            <p class="text-white-50 fw-bold mb-0 text-uppercase small">O.S. em Andamento</p>
-                            <h2 class="kpi-value text-info !important" id="kpiOsPendentes">0</h2>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="kpi-box shadow-sm">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            <p class="text-white-50 fw-bold mb-0 text-uppercase small">Alertas de Stock</p>
-                            <h2 class="kpi-value text-warning !important" id="kpiStockCritico">0</h2>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="kpi-box shadow-sm">
-                            <i class="bi bi-people"></i>
-                            <p class="text-white-50 fw-bold mb-0 text-uppercase small">Clientes Registados</p>
-                            <h2 class="kpi-value text-success !important" id="kpiTotalClientes">0</h2>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-4">
-                    <div class="col-lg-6">
-                        <div class="card h-100 border-0">
-                            <div class="card-header bg-transparent border-bottom border-secondary py-3">
-                                <h5 class="mb-0"><i class="bi bi-bell-fill me-2 text-warning"></i> Atividades Recentes</h5>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="list-group list-group-flush bg-transparent" id="listaAtividadesRecentes">
-                                    <!-- Preenchido via JS -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card h-100 border-0" style="background: linear-gradient(145deg, #1e2124 0%, #000000 100%);">
-                            <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-5">
-                                <i class="bi bi-stars display-1 mb-4" style="color: var(--bs-accent);"></i>
-                                <h3 class="fw-bold mb-3">Evolução SaaS Concluída</h3>
-                                <p class="text-white-50 fs-5 mb-4">A sua plataforma processa agora pagamentos, gere NFs e armazena os dados dos clientes em tempo real na nuvem.</p>
-                                <button class="btn btn-primary btn-lg px-5 shadow" onclick="mudarSeparador('agendamentos')">Gerir Ordens de Serviço</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MÓDULO 2: ORDENS DE SERVIÇO -->
-            <section id="agendamentos" class="admin-section" style="display:none;">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-header d-flex justify-content-between align-items-center py-4 bg-dark">
-                        <h4 class="mb-0"><i class="bi bi-tools me-2" style="color: var(--bs-accent);"></i> Centro de Operações (O.S.)</h4>
-                        <button class="btn btn-primary fw-bold px-4 shadow" data-bs-toggle="modal" data-bs-target="#modalOS" onclick="prepararModalOS('add')"><i class="bi bi-plus-lg me-2"></i> CRIAR O.S.</button>
-                    </div>
-                    <div class="card-body p-4 bg-black">
-                        <div class="row g-4" id="quadroAgendamentos"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MÓDULO 3: STOCK -->
-            <section id="estoque" class="admin-section" style="display:none;">
-                <div class="card border-0">
-                    <div class="card-header d-flex justify-content-between align-items-center py-3 bg-dark">
-                        <h5 class="mb-0"><i class="bi bi-boxes me-2"></i> Inventário & Stock</h5>
-                        <div>
-                            <button class="btn btn-outline-light btn-sm fw-bold me-2" data-bs-toggle="modal" data-bs-target="#modalAjusteStock" onclick="prepararAjusteStock('add')"><i class="bi bi-arrow-up-circle"></i> Entrada</button>
-                            <button class="btn btn-outline-light btn-sm fw-bold me-2" data-bs-toggle="modal" data-bs-target="#modalAjusteStock" onclick="prepararAjusteStock('remove')"><i class="bi bi-arrow-down-circle"></i> Quebra</button>
-                            <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalPeca" onclick="prepararModalPeca('add')">Registar Artigo</button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead><tr><th>Ref</th><th>Descrição do Artigo</th><th>Custo Bruto</th><th>PVP Cliente</th><th>Stock Atual</th><th>Ações</th></tr></thead>
-                                <tbody id="tabelaEstoque"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MÓDULO 4: CLIENTES E MOTAS -->
-            <section id="clientesMotos" class="admin-section" style="display:none;">
-                <div class="row g-4">
-                    <div class="col-xl-6">
-                        <div class="card border-0 h-100">
-                            <div class="card-header d-flex justify-content-between align-items-center py-3 bg-dark">
-                                <h5 class="mb-0"><i class="bi bi-people-fill me-2"></i> Base de Clientes</h5>
-                                <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalCliente" onclick="prepararModalCliente('add')">Novo Cliente</button>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle">
-                                        <thead><tr><th>Nome</th><th>Contacto</th><th>Portal Cliente</th><th>Ações</th></tr></thead>
-                                        <tbody id="tabelaClientes"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6">
-                        <div class="card border-0 h-100">
-                            <div class="card-header d-flex justify-content-between align-items-center py-3 bg-dark">
-                                <h5 class="mb-0"><i class="bi bi-scooter me-2"></i> Registo de Viaturas</h5>
-                                <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalMoto" onclick="prepararModalMoto('add')">Nova Mota</button>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle">
-                                        <thead><tr><th>Matrícula</th><th>Proprietário</th><th>Modelo / Ano</th><th>Quilometragem</th><th>Ações</th></tr></thead>
-                                        <tbody id="tabelaMotos"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MÓDULO 5: COMPRAS E FORNECEDORES -->
-            <section id="compras" class="admin-section" style="display:none;">
-                <div class="row g-4">
-                    <div class="col-xl-8">
-                        <div class="card border-0 h-100">
-                            <div class="card-header d-flex justify-content-between align-items-center py-3 bg-dark">
-                                <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i> Faturas de Compra (NFs e Boletos)</h5>
-                                <button class="btn btn-primary fw-bold px-4" data-bs-toggle="modal" data-bs-target="#modalCompra" onclick="prepararModalCompra()"><i class="bi bi-upload me-2"></i> Lançar Fatura</button>
-                            </div>
-                            <div class="card-body">
-                                <div class="alert alert-dark border-secondary text-white-50 d-flex align-items-center">
-                                    <i class="bi bi-info-circle-fill fs-4 me-3 text-warning"></i>
-                                    <div>Lançar uma fatura de compra adiciona automaticamente as peças ao stock. Se o pagamento for <strong>Boleto / A Prazo</strong>, o sistema cria uma dívida pendente no módulo Financeiro.</div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle mt-4">
-                                        <thead><tr><th>Data Doc.</th><th>Fornecedor</th><th>Referência / NF</th><th>Liquidação</th><th>Total Faturado</th></tr></thead>
-                                        <tbody id="tabelaHistoricoCompras"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4">
-                        <div class="card border-0 h-100">
-                            <div class="card-header d-flex justify-content-between align-items-center py-3 bg-dark">
-                                <h5 class="mb-0"><i class="bi bi-buildings me-2"></i> Fornecedores</h5>
-                                <button class="btn btn-outline-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalFornecedor">Novo</button>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle">
-                                        <thead><tr><th>Entidade</th><th>Segmento</th><th>Remover</th></tr></thead>
-                                        <tbody id="tabelaFornecedores"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MÓDULO 6: FINANCEIRO (CAIXA) -->
-            <section id="financeiro" class="admin-section" style="display:none;">
-                <div class="card border-0 shadow">
-                    <div class="card-header d-flex justify-content-between align-items-center py-4 bg-dark">
-                        <h4 class="mb-0"><i class="bi bi-bank me-2" style="color: var(--bs-accent);"></i> Tesouraria e Fluxo de Caixa</h4>
-                        <button class="btn btn-primary fw-bold px-4" data-bs-toggle="modal" data-bs-target="#modalFinanceiro"><i class="bi bi-cash me-2"></i> Movimento Avulso</button>
-                    </div>
-                    <div class="card-body p-4 bg-black">
-                        <div class="row mb-5 g-4 text-center">
-                            <div class="col-md-4">
-                                <div class="p-4 rounded-4" style="background: linear-gradient(145deg, rgba(25,135,84,0.1) 0%, rgba(25,135,84,0.05) 100%); border: 1px solid rgba(25,135,84,0.3);">
-                                    <h6 class="text-success text-uppercase fw-bold mb-3 letter-spacing-1">Receitas Realizadas</h6>
-                                    <h2 id="caixaEntradas" class="text-success fw-bold mb-0 display-6">R$ 0,00</h2>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-4 rounded-4" style="background: linear-gradient(145deg, rgba(220,53,69,0.1) 0%, rgba(220,53,69,0.05) 100%); border: 1px solid rgba(220,53,69,0.3);">
-                                    <h6 class="text-danger text-uppercase fw-bold mb-3 letter-spacing-1">Despesas Pagas</h6>
-                                    <h2 id="caixaSaidas" class="text-danger fw-bold mb-0 display-6">R$ 0,00</h2>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-4 rounded-4 shadow-lg" style="background: linear-gradient(145deg, var(--bs-dark-card) 0%, #1e2124 100%); border: 1px solid var(--bs-accent);">
-                                    <h6 class="text-warning text-uppercase fw-bold mb-3 letter-spacing-1">Saldo Disponível</h6>
-                                    <h2 id="caixaSaldo" class="text-white fw-bold mb-0 display-5">R$ 0,00</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <h5 class="mb-4 text-white-50 border-bottom border-secondary pb-2"><i class="bi bi-list-columns-reverse me-2"></i> Extrato de Conta Corrente</h5>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead><tr><th>Data Liquidação</th><th>Operação</th><th>Detalhes / Documento</th><th>Meio de Pagamento</th><th>Valor</th><th>Estado</th><th>Ações / Baixa</th></tr></thead>
-                                <tbody id="tabelaCaixa"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MÓDULO 7: CHAT CRM -->
-            <section id="mensagens" class="admin-section" style="display:none;">
-                <div class="row h-100 g-4">
-                    <div class="col-lg-4">
-                        <div class="card h-100 border-0 shadow">
-                            <div class="card-header py-3 bg-dark"><h5 class="mb-0"><i class="bi bi-headset me-2"></i> Atendimento ao Cliente</h5></div>
-                            <div class="list-group list-group-flush bg-transparent" id="chatListaClientes" style="overflow-y: auto; height: 600px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-lg-8">
-                        <div class="card h-100 border-0 shadow">
-                            <div class="card-header py-3 bg-dark"><h5 id="chatNomeCliente" class="text-warning mb-0">Aguardando Seleção de Cliente</h5></div>
-                            <div class="card-body p-0 d-flex flex-column bg-black">
-                                <div class="chat-container border-0 w-100 bg-transparent h-100" style="min-height: 500px;">
-                                    <div class="chat-messages" id="chatAreaMsg">
-                                        <div class="text-center text-white-50 mt-5 pt-5 h-100 d-flex flex-column justify-content-center align-items-center">
-                                            <i class="bi bi-chat-left-dots display-1 mb-4 opacity-50"></i>
-                                            <h4 class="fw-normal">Selecione um cliente na lista à esquerda</h4>
-                                            <p>As mensagens enviadas aqui aparecem na App do Cliente em tempo real.</p>
-                                        </div>
-                                    </div>
-                                    <div class="chat-input p-3" id="chatAreaInput" style="display:none; background-color: #1e2124;">
-                                        <input type="text" class="form-control form-control-lg rounded-pill px-4 bg-dark text-white border-secondary" id="inputChatAdmin" placeholder="Escreva a mensagem...">
-                                        <button class="btn btn-primary rounded-circle ms-3 shadow-lg d-flex align-items-center justify-content-center" style="width: 55px; height: 55px;" onclick="enviarChat()"><i class="bi bi-send-fill fs-4"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MÓDULO 8: ASSISTENTE IA (NOVO - PLACEHOLDER PARA FUTURO) -->
-            <section id="ia_assistant" class="admin-section" style="display:none;">
-                <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #1e2124 0%, #111 100%);">
-                    <div class="card-body p-5 text-center">
-                        <div class="mb-4 position-relative d-inline-block">
-                            <i class="bi bi-robot" style="font-size: 6rem; color: var(--bs-accent);"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle"></span>
-                        </div>
-                        <h2 class="fw-bold mb-3">Assistente de Gestão IA</h2>
-                        <p class="text-white-50 fs-5 mb-5 mx-auto" style="max-width: 700px;">A inteligência artificial irá analisar os seus dados, prever faltas de stock, agendar revisões automaticamente com base no KM das viaturas e gerar relatórios financeiros complexos. Módulo em desenvolvimento.</p>
-                        
-                        <div class="row justify-content-center g-4 max-w-100">
-                            <div class="col-md-4">
-                                <div class="p-4 rounded bg-dark border border-secondary text-start h-100">
-                                    <h5 class="text-warning"><i class="bi bi-graph-up-arrow me-2"></i> Análise de Vendas</h5>
-                                    <p class="small text-white-50 mt-2">A IA irá cruzar os serviços mais lucrativos e sugerir promoções para clientes inativos.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-4 rounded bg-dark border border-secondary text-start h-100">
-                                    <h5 class="text-info"><i class="bi bi-calendar-event me-2"></i> Previsão de Manutenção</h5>
-                                    <p class="small text-white-50 mt-2">Avisos automáticos de que a mota do Cliente X precisa de trocar o óleo com base no tempo médio de uso.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <!-- ========================================================================================= -->
-    <!-- MODAIS SÉNIOR (O.S. E COMPRAS COM LÓGICA ABSOLUTA)                                        -->
-    <!-- ========================================================================================= -->
-
-    <!-- MODAL: ORDEM DE SERVIÇO (O.S.) -->
-    <div class="modal fade" id="modalOS" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content shadow-lg border-warning">
-                <div class="modal-header py-3 bg-dark border-bottom border-warning">
-                    <h4 class="modal-title text-warning fw-bold"><i class="bi bi-card-checklist me-2"></i> Ficha de Ordem de Serviço</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-0 bg-dark">
-                    <form id="formOS" onsubmit="salvarOS(event)">
-                        <input type="hidden" id="osId">
-                        
-                        <!-- Abas de Navegação Modernas -->
-                        <div class="bg-black p-3 pb-0 border-bottom border-secondary">
-                            <ul class="nav nav-tabs border-0" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active px-4 py-3 fs-5 rounded-top" data-bs-toggle="tab" data-bs-target="#osGeral" type="button"><i class="bi bi-wrench-adjustable me-2"></i> 1. Diagnóstico & Orçamento</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link px-4 py-3 fs-5 rounded-top" data-bs-toggle="tab" data-bs-target="#osChecklist" type="button"><i class="bi bi-shield-check me-2"></i> 2. Checklist & Inspeção</button>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <div class="tab-content p-4">
-                            <!-- Aba 1: Orçamento -->
-                            <div class="tab-pane fade show active" id="osGeral">
-                                <div class="row g-4 mb-4">
-                                    <div class="col-md-6"><label class="form-label text-white-50 text-uppercase small fw-bold">Cliente Proprietário</label><select class="form-select form-select-lg fw-bold shadow-sm" id="osCliente" required onchange="filtrarMotosOS()"></select></div>
-                                    <div class="col-md-6"><label class="form-label text-white-50 text-uppercase small fw-bold">Veículo em Manutenção</label><select class="form-select form-select-lg fw-bold shadow-sm" id="osMoto" required></select></div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label text-white-50 text-uppercase small fw-bold">Defeito Relatado / O que fazer?</label>
-                                    <textarea class="form-control bg-black text-white" id="osDescricao" rows="3" required placeholder="Descreva os problemas técnicos e soluções aplicadas..."></textarea>
-                                </div>
-
-                                <div class="row g-4 mb-5 p-4 rounded-4" style="background-color: #1e2124; border: 1px solid rgba(255,255,255,0.05);">
-                                    <div class="col-md-4">
-                                        <label class="form-label text-warning text-uppercase small fw-bold">Estado Atual (Fase)</label>
-                                        <select class="form-select form-select-lg fw-bold border-warning text-warning bg-black shadow-sm" id="osStatus" onchange="verificarStatusOS()">
-                                            <option value="Aguardando Orçamento">Em Análise (Aguardar Orçamento)</option>
-                                            <option value="Orçamento Enviado">Orçamento Comunicado ao Cliente</option>
-                                            <option value="Aprovado">Orçamento Aprovado (Na Fila)</option>
-                                            <option value="Em Andamento">Mota no Elevador (Em Andamento)</option>
-                                            <option value="Concluido">Concluído (Ativa Faturação & Stock)</option>
-                                            <option value="Cancelado">Processo Cancelado</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4"><label class="form-label text-white-50 text-uppercase small fw-bold">Técnico Alocado</label><select class="form-select form-select-lg bg-black" id="osMec"></select></div>
-                                    <div class="col-md-4"><label class="form-label text-white-50 text-uppercase small fw-bold">Data Entrada</label><input type="date" class="form-control form-control-lg bg-black" id="osData" required></div>
-                                </div>
-
-                                <!-- Orçamentação -->
-                                <div class="p-4 rounded-4 shadow-lg position-relative overflow-hidden" style="background-color: #1e2124; border: 1px solid #495057;">
-                                    <div class="position-absolute top-0 end-0 p-3 opacity-25"><i class="bi bi-calculator display-1"></i></div>
-                                    
-                                    <h5 class="text-white mb-4 fw-bold position-relative z-1"><i class="bi bi-cash-stack me-2 text-success"></i> Tabela de Custos do Serviço</h5>
-                                    
-                                    <div class="row align-items-center mb-4 position-relative z-1">
-                                        <div class="col-md-4"><label class="form-label fw-bold fs-5 text-white-50 mb-0">Mão de Obra (R$)</label></div>
-                                        <div class="col-md-8"><input type="number" step="0.01" class="form-control form-control-lg fw-bold text-white bg-black border-secondary" id="osMaoObra" value="0" oninput="calcularTotalOS()"></div>
-                                    </div>
-                                    
-                                    <div class="mb-4 position-relative z-1">
-                                        <label class="form-label fw-bold text-info d-block border-bottom border-secondary pb-2 mb-3">Peças a Aplicar <small class="text-white-50 fw-normal">(A baixa no stock ocorre ao concluir a OS)</small></label>
-                                        <div id="containerPecasOS" class="d-flex flex-column gap-3 mb-3"></div>
-                                        <button type="button" class="btn btn-outline-info fw-bold rounded-pill px-4 shadow-sm" onclick="adicionarPecaOS()"><i class="bi bi-plus-circle me-1"></i> Adicionar Peça da Prateleira</button>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between align-items-center p-4 rounded-4 mt-5 position-relative z-1 shadow" style="background: linear-gradient(135deg, rgba(25, 135, 84, 0.2) 0%, rgba(25, 135, 84, 0.05) 100%); border: 1px solid #198754;">
-                                        <h3 class="mb-0 text-white fw-light">VALOR A COBRAR:</h3>
-                                        <h1 class="mb-0 text-success fw-bold display-4" style="letter-spacing: -2px;">R$ <span id="osTotalValor">0.00</span></h1>
-                                        <input type="hidden" id="osTotalHidden" value="0">
-                                    </div>
-                                </div>
-
-                                <!-- ÁREA DE PAGAMENTO (Só se vê em "Concluido") -->
-                                <div id="areaPagamentoOS" class="mt-4 p-4 rounded-4 d-none shadow-lg" style="background-color: rgba(13, 202, 240, 0.1); border: 2px dashed #0dcaf0;">
-                                    <h4 class="text-info fw-bold mb-3"><i class="bi bi-wallet-fill me-2"></i> Recebimento Financeiro</h4>
-                                    <p class="text-white-50 mb-4">Atenção: Guardar a O.S. como "Concluído" debitará as peças do stock e lançará o valor no Caixa. Se escolher Boleto, será registado como dívida Pendente.</p>
-                                    <div class="row g-4">
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-bold text-white text-uppercase small">Método de Liquidação</label>
-                                            <select class="form-select form-select-lg fw-bold text-info border-info bg-black" id="osPgtoForma" onchange="verificarFormaPagamentoOS()">
-                                                <option value="Dinheiro">Pronto Pagamento (Dinheiro)</option>
-                                                <option value="Pix">Transferência / PIX</option>
-                                                <option value="Cartão de Débito">Multibanco / Débito</option>
-                                                <option value="Cartão de Crédito">Cartão de Crédito</option>
-                                                <option value="Boleto Bancário">Boleto / A Prazo (Gera Dívida)</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6" id="osDivParcelas" style="display:none;">
-                                            <label class="form-label fw-bold text-white text-uppercase small">Opções de Fracionamento</label>
-                                            <select class="form-select form-select-lg bg-black border-secondary" id="osPgtoParcelas">
-                                                <option value="1x">1x (S/ Juros)</option><option value="2x">2x</option><option value="3x">3x</option><option value="4x">4x</option><option value="6x">6x</option><option value="12x">12x</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Aba 2: Checklist -->
-                            <div class="tab-pane fade" id="osChecklist">
-                                <div class="p-4 rounded-4" style="background-color: #1e2124; border: 1px solid #495057;">
-                                    <h4 class="text-white mb-4 fw-bold pb-3 border-bottom border-secondary"><i class="bi bi-clipboard2-check text-warning me-2"></i> Formulário de Receção da Viatura</h4>
-                                    
-                                    <div class="row mb-5 g-4">
-                                        <div class="col-md-4">
-                                            <div class="p-3 bg-black rounded-3 border border-secondary h-100">
-                                                <label class="form-label fw-bold text-info mb-3 d-block"><i class="bi bi-fuel-pump me-2"></i> Depósito de Combustível</label>
-                                                <select class="form-select border-info bg-dark" id="chkComb">
-                                                    <option>Não Avaliado</option><option>Vazio / Na Reserva</option><option>1/4 Tanque</option><option>Meio Tanque</option><option>Atestado</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div class="p-3 bg-black rounded-3 border border-secondary h-100 d-flex flex-column justify-content-center">
-                                                <label class="form-label fw-bold text-white-50 mb-3 d-block">Testes Rápidos de Segurança</label>
-                                                <div class="d-flex flex-wrap gap-4">
-                                                    <div class="form-check form-switch fs-5"><input class="form-check-input bg-secondary border-0" type="checkbox" id="chkPainel"><label class="form-check-label ms-2 text-white">Eletrónica OK</label></div>
-                                                    <div class="form-check form-switch fs-5"><input class="form-check-input bg-secondary border-0" type="checkbox" id="chkPneusOk"><label class="form-check-label ms-2 text-white">Pressão OK</label></div>
-                                                    <div class="form-check form-switch fs-5"><input class="form-check-input bg-secondary border-0" type="checkbox" id="chkCare"><label class="form-check-label ms-2 text-white">Plásticos Inteiros</label></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <h5 class="text-white mb-3 fw-bold"><i class="bi bi-speedometer me-2"></i> KPIs de Desgaste (Apresentado na App do Cliente)</h5>
-                                    <div class="row mb-5 g-4 p-4 rounded-3 bg-black border border-secondary">
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-bold text-warning d-block">Vida Útil Pneu Dianteiro (%)</label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-lg border-warning bg-dark fw-bold text-center" id="chkPneuDia" placeholder="Ex: 80" min="0" max="100">
-                                                <span class="input-group-text bg-warning text-dark fw-bold">%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-bold text-warning d-block">Vida Útil Pneu Traseiro (%)</label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-lg border-warning bg-dark fw-bold text-center" id="chkPneuTra" placeholder="Ex: 40" min="0" max="100">
-                                                <span class="input-group-text bg-warning text-dark fw-bold">%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-12"><small class="text-white-50"><i class="bi bi-info-circle me-1"></i> Digite 100 para um pneu novo, ou 0 para um pneu totalmente careca. O sistema calculará o risco.</small></div>
-                                    </div>
-                                    
-                                    <div>
-                                        <label class="form-label fw-bold text-danger"><i class="bi bi-shield-exclamation me-2"></i> Termo de Responsabilidade (Danos Prévios da Mota)</label>
-                                        <textarea class="form-control border-danger bg-black" id="chkObs" rows="5" placeholder="Declare tudo o que a moto já tem de estragado para proteção legal da oficina. Ex: Espelho direito raspado, escape amassado..."></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 pt-4 border-top border-secondary d-flex justify-content-end">
-                            <button type="button" class="btn btn-dark btn-lg me-3 fw-bold" data-bs-dismiss="modal">Fechar Ficha</button>
-                            <button type="submit" class="btn btn-warning btn-lg px-5 py-3 fw-bold text-dark shadow-lg fs-5"><i class="bi bi-hdd-fill me-2"></i> REGISTAR O.S. NO SISTEMA</button>
-                        </div>
-                    </form>
+            <div class="mb-4 text-start">
+                <label class="form-label text-white-50 fw-bold small text-uppercase">Senha de Acesso</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-white-50"><i class="bi bi-key"></i></span>
+                    <input type="password" class="form-control" id="pwd" required placeholder="••••••••">
                 </div>
             </div>
+            <button type="submit" class="btn btn-primary w-100 shadow" id="btnAcesso">ENTRAR NO SISTEMA</button>
+        </form>
+        <div class="mt-4 pt-3 border-top border-secondary">
+            <small class="text-white-50 fw-bold">Powered by thIAguinho Soluções</small>
         </div>
     </div>
-
-    <!-- MODAL COMPRAS E NFs (COM INTEGRAÇÃO AO FINANCEIRO E BOLETOS) -->
-    <div class="modal fade" id="modalCompra" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content shadow-lg border-primary">
-                <div class="modal-header py-3 bg-dark border-bottom border-primary">
-                    <h5 class="modal-title fs-4 text-white"><i class="bi bi-box-arrow-in-down me-2 text-primary"></i> Processar Fatura de Fornecedor</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4 bg-dark">
-                    <form id="formCompra" onsubmit="salvarCompra(event)">
-                        <div class="row g-4 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label text-white-50 text-uppercase small fw-bold">Entidade Fornecedora</label>
-                                <select class="form-select form-select-lg bg-black border-secondary" id="compraForn" required></select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-info text-uppercase small fw-bold">Nº do Documento (NF / Fatura)</label>
-                                <input type="text" class="form-control form-control-lg fw-bold border-info text-info bg-black" id="compraNF" required placeholder="Ex: FT-2023/154">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label text-white-50 text-uppercase small fw-bold">Data de Emissão</label>
-                                <input type="date" class="form-control form-control-lg bg-black border-secondary" id="compraData" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-5 p-4 rounded-4 border border-secondary" style="background-color: #1e2124;">
-                            <h6 class="text-white fw-bold mb-4 border-bottom border-secondary pb-3"><i class="bi bi-boxes me-2 text-primary"></i> Mercadoria Recebida (Entrada Automática no Stock)</h6>
-                            <div id="containerPecasCompra" class="d-flex flex-column gap-3 mb-4"></div>
-                            <button type="button" class="btn btn-outline-primary fw-bold rounded-pill px-4" onclick="adicionarPecaCompra()"><i class="bi bi-plus-lg me-1"></i> Inserir Artigo da Fatura</button>
-                        </div>
-
-                        <div class="row g-4 mb-4 p-4 rounded-4 shadow-inner" style="background-color: rgba(220, 53, 69, 0.05); border: 1px solid #dc3545;">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-danger text-uppercase small">Liquidação da Fatura</label>
-                                <select class="form-select form-select-lg fw-bold border-danger text-danger bg-black" id="compraPgtoForma" onchange="verificarPgtoCompra()">
-                                    <option value="Boleto Bancário">Boleto / Transferência Futura (Gera Pendente)</option>
-                                    <option value="Pix">PIX a Pronto</option>
-                                    <option value="Cartão de Crédito">Cartão da Empresa</option>
-                                    <option value="Dinheiro">Dinheiro (Fundo de Maneio)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6" id="compraDivParcelas" style="display:block;">
-                                <label class="form-label fw-bold text-danger text-uppercase small">Condições de Pagamento</label>
-                                <select class="form-select form-select-lg bg-black border-danger text-danger" id="compraParcelas">
-                                    <option value="A Vista">Pronto Pagamento</option><option value="30 Dias">A 30 Dias</option><option value="30/60 Dias">30/60 Dias</option><option value="30/60/90 Dias">30/60/90 Dias</option>
-                                </select>
-                            </div>
-                            <div class="col-12 mt-5 pt-4 border-top border-danger d-flex justify-content-between align-items-center">
-                                <span class="text-white-50 fw-bold text-uppercase">Total do Documento:</span>
-                                <div class="d-flex align-items-center">
-                                    <h2 class="text-danger fw-bold mb-0 me-3 display-6">R$ <span id="compraTotalVisual">0.00</span></h2>
-                                </div>
-                                <input type="hidden" id="compraTotalFinal" value="0">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-danger w-100 py-3 fs-5 fw-bold shadow-lg"><i class="bi bi-box-arrow-in-down me-2"></i> REGISTAR ENTRADA DE STOCK E DESPESA</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modais Estruturais Simplificados -->
-    <div class="modal fade" id="modalPeca" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title text-white">Criar Referência de Produto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formPeca" onsubmit="salvarPeca(event)"><input type="hidden" id="pecaId"><div class="mb-3"><label class="form-label text-white-50">Descrição Comercial</label><input type="text" class="form-control form-control-lg text-white bg-black" id="pecaNome" required></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Preço de Custo S/IVA (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black text-white" id="pecaCusto" required></div><div class="col-6"><label class="form-label text-success fw-bold">Preço de Venda a Público (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black text-success fw-bold border-success" id="pecaVenda" required></div></div><div class="mb-4"><label class="form-label text-white-50">Unidades Físicas na Prateleira</label><input type="number" class="form-control form-control-lg bg-black text-center fw-bold text-white" id="pecaQtd" required></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">GRAVAR NO SISTEMA</button></form></div></div></div></div>
-    <div class="modal fade" id="modalAjusteStock" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title text-white" id="stockAdjTitle">Ajuste de Stock</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formAjuste" onsubmit="ajustarEstoque(event)"><input type="hidden" id="adjType"><div class="mb-3"><label class="form-label text-white-50">Identifique o Artigo</label><select class="form-select form-select-lg bg-black text-white" id="adjItem" required></select></div><div class="mb-4"><label class="form-label text-white-50">Diferencial (Qtd a mover)</label><input type="number" class="form-control form-control-lg bg-black text-center fs-3 fw-bold text-white" id="adjQtd" required min="1"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">EXECUTAR MOVIMENTO</button></form></div></div></div></div>
-    <div class="modal fade" id="modalCliente" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title text-white">Ficha de Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formCliente" onsubmit="salvarCliente(event)"><input type="hidden" id="clienteId"><div class="mb-3"><label class="form-label text-white-50">Nome do Proprietário</label><input type="text" class="form-control form-control-lg bg-black text-white" id="clienteNome" required></div><div class="mb-4"><label class="form-label text-white-50">Telemóvel / WhatsApp (DDD + Número)</label><input type="number" class="form-control form-control-lg bg-black text-white" id="clienteContato" required></div><hr class="border-secondary mb-4"><h6 class="text-warning mb-3 fw-bold"><i class="bi bi-phone"></i> Portal de Acesso do Cliente</h6><div class="mb-3"><label class="form-label text-white-50">E-mail Pessoal</label><input type="email" class="form-control bg-black text-white" id="clienteEmail" required></div><div class="mb-4"><label class="form-label text-white-50">Chave de Acesso (PIN)</label><div class="input-group"><input type="text" class="form-control bg-black text-warning fw-bold border-warning" id="clienteSenha" required><button class="btn btn-warning fw-bold text-dark px-4" type="button" onclick="document.getElementById('clienteSenha').value=Math.random().toString(36).slice(-6)">Gerar Segura</button></div></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">CRIAR PERFIL</button></form></div></div></div></div>
-    <div class="modal fade" id="modalMoto" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title text-white">Documento do Veículo</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formMoto" onsubmit="salvarMoto(event)"><input type="hidden" id="motoId"><div class="mb-3"><label class="form-label text-white-50">Dono da Viatura</label><select class="form-select form-select-lg bg-black text-white" id="motoDono" required></select></div><div class="mb-3"><label class="form-label text-white-50">Marca e Modelo</label><input type="text" class="form-control form-control-lg bg-black text-white" id="motoModelo" required placeholder="Honda Forza 750"></div><div class="mb-3"><label class="form-label text-white-50">Matrícula</label><input type="text" class="form-control form-control-lg bg-black text-uppercase fw-bold text-warning border-warning" id="motoPlaca" required></div><div class="mb-4"><label class="form-label text-white-50">Quilómetros Atuais</label><input type="number" class="form-control form-control-lg bg-black text-white" id="motoKm"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">ADICIONAR À GARAGEM</button></form></div></div></div></div>
-    <div class="modal fade" id="modalFuncionario" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title text-white">Recursos Humanos</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFunc(event)"><div class="mb-3"><label class="form-label text-white-50">Nome do Funcionário</label><input type="text" class="form-control form-control-lg bg-black text-white" id="funcNome" required></div><div class="mb-4"><label class="form-label text-white-50">Especialização Técnica</label><input type="text" class="form-control form-control-lg bg-black text-white" id="funcCargo" placeholder="Eletricista de Motos"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">ADMITIR</button></form></div></div></div></div>
-    <div class="modal fade" id="modalFornecedor" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title text-white">Ficha de Fornecedor</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFornecedor(event)"><div class="mb-3"><label class="form-label text-white-50">Razão Social da Entidade</label><input type="text" class="form-control form-control-lg bg-black text-white" id="fornNome" required></div><div class="mb-4"><label class="form-label text-white-50">Segmento Principal</label><input type="text" class="form-control form-control-lg bg-black text-white" id="fornCat" placeholder="Pneus, Lubrificantes, Ferramentas..."></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">CRIAR ENTIDADE</button></form></div></div></div></div>
-    <div class="modal fade" id="modalFinanceiro" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title text-white">Guia de Movimento Manual</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFinManual(event)"><div class="mb-3"><label class="form-label text-white-50">Operação</label><select class="form-select form-select-lg bg-black fw-bold" id="finTipo"><option class="text-success" value="Entrada">Registar Receita</option><option class="text-danger" value="Saída">Declarar Despesa</option></select></div><div class="mb-3"><label class="form-label text-white-50">Justificativo Legal</label><input type="text" class="form-control form-control-lg bg-black text-white" id="finDesc" required placeholder="Venda Balcão, Luz, Água..."></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Valor Apurado (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black text-white fw-bold" id="finValor" required></div><div class="col-6"><label class="form-label text-white-50">Data Valor</label><input type="date" class="form-control form-control-lg bg-black text-white" id="finData" required></div></div><div class="mb-4"><label class="form-label text-white-50">Liquidação</label><select class="form-select form-select-lg bg-black border-warning text-warning fw-bold" id="finStatus"><option value="Pago">Verba Liquidada (Paga)</option><option value="Pendente">Em Dívida (Fica Pendente)</option></select></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-5">SUBMETER AO CAIXA</button></form></div></div></div></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // =========================================================================
-        // 1. CORE E REDIRECIONAMENTO
-        // =========================================================================
-        if (sessionStorage.getItem('evolution_admin_auth') !== 'true') {
-            if (window.location.protocol !== 'blob:') { window.location.replace('index.html'); }
-            else { console.log("Prévia ativa. Bypass injetado."); }
-        }
-        function terminarSessao() {
-            sessionStorage.removeItem('evolution_admin_auth');
-            if (window.location.protocol !== 'blob:') window.location.replace('index.html');
-            else alert("Acesso encerrado no simulador.");
-        }
-        const $ = id => document.getElementById(id);
-        const $v = id => $(id).value;
-        function showToast(msg, type='info') {
-            const bg = type==='error'?'bg-danger':(type==='success'?'bg-success':'bg-primary');
-            const id = 't'+Date.now();
-            const html = `<div id="${id}" class="toast align-items-center text-white ${bg} border-0 show shadow-lg p-3 mt-2" role="alert" style="font-size: 1.1rem;"><div class="d-flex"><div class="toast-body fw-bold">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
-            const div = document.createElement('div'); div.innerHTML = html;
-            $('toastContainer').appendChild(div.firstChild);
-            setTimeout(() => $(id)?.remove(), 4000);
-        }
-
-        // =========================================================================
-        // 2. FIREBASE SÉNIOR (SEM AUTH E SEM PROBLEMA DE ÍNDICES NO CHAT)
-        // =========================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyAq6gEJlUGuzJmrNf-lVY0cqdOWsJ9xNeo",
             authDomain: "evolution-179d0.firebaseapp.com",
@@ -699,256 +57,49 @@
             messagingSenderId: "349908951188",
             appId: "1:349908951188:web:457832d484a83f45b19481"
         };
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let dbEstoque=[], dbClientes=[], dbMotos=[], dbFuncionarios=[], dbFornecedores=[], dbServicos=[], dbFinanceiro=[], dbMensagens=[];
-
-        function mudarSeparador(id) {
-            document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
-            $(id).style.display = 'block';
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            try { event.target.classList.add('active'); } catch(e){}
-            if(id === 'dashboard') calcularEstatisticasTotais(); // Atualiza dashboard se clicar nele
+        function showToast(msg, type='error') {
+            const bg = type==='error'?'bg-danger':'bg-success';
+            const t = document.createElement('div');
+            t.innerHTML = `<div class="toast align-items-center text-white ${bg} border-0 show p-2 mt-2" role="alert"><div class="d-flex"><div class="toast-body fw-bold">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
+            document.getElementById('toastContainer').appendChild(t.firstChild);
+            setTimeout(() => document.getElementById('toastContainer').firstChild?.remove(), 4000);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            db.collection('estoqueItems').onSnapshot(s => { dbEstoque = s.docs.map(d=>({id:d.id,...d.data()})); renderEstoque(); calcularEstatisticasTotais(); });
-            db.collection('clientes').onSnapshot(s => { dbClientes = s.docs.map(d=>({id:d.id,...d.data()})); renderClientes(); calcularEstatisticasTotais(); });
-            db.collection('motos').onSnapshot(s => { dbMotos = s.docs.map(d=>({id:d.id,...d.data()})); renderMotos(); });
-            db.collection('funcionarios').onSnapshot(s => { dbFuncionarios = s.docs.map(d=>({id:d.id,...d.data()})); renderFuncionarios(); });
-            db.collection('fornecedores').onSnapshot(s => { dbFornecedores = s.docs.map(d=>({id:d.id,...d.data()})); renderFornecedores(); });
-            db.collection('servicos').onSnapshot(s => { dbServicos = s.docs.map(d=>({id:d.id,...d.data()})); renderOS(); calcularEstatisticasTotais(); });
-            db.collection('financeiroItems').onSnapshot(s => { dbFinanceiro = s.docs.map(d=>({id:d.id,...d.data()})); renderCaixa(); calcularEstatisticasTotais(); });
-            
-            // CHAT RECONSTRUÍDO: O JS assume a organização. Nunca mais falha!
-            db.collection('mensagens').onSnapshot(s => {
-                dbMensagens = s.docs.map(d=>({id:d.id,...d.data()}));
-                dbMensagens.sort((a,b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
-                if(chatActiveClienteId) abrirChat(chatActiveClienteId, $('chatActiveClientName').innerText.replace('Em linha com: ', '').trim());
-            });
+        async function fazerLogin(e) {
+            e.preventDefault();
+            const usr = document.getElementById('usr').value.trim();
+            const pwd = document.getElementById('pwd').value.trim();
+            const btn = document.getElementById('btnAcesso');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Autenticando...';
+            btn.disabled = true;
 
-            mudarSeparador('dashboard');
-        });
-
-        // =========================================================================
-        // 3. DASHBOARD E INTELIGÊNCIA ARTIFICIAL (SAAS)
-        // =========================================================================
-        function calcularEstatisticasTotais() {
-            // Faturação Mensal (Apenas Pagos do mês atual)
-            const hoje = new Date();
-            const receitasMes = dbFinanceiro.filter(t => t.tipo === 'Entrada' && (t.status === 'Pago' || !t.status) && new Date(t.data).getMonth() === hoje.getMonth() && new Date(t.data).getFullYear() === hoje.getFullYear()).reduce((acc, t) => acc + t.valor, 0);
-            $('kpiFaturacao').innerText = `R$ ${receitasMes.toFixed(2)}`;
-
-            // O.S. Pendentes
-            const pendentes = dbServicos.filter(s => s.status !== 'Concluido' && s.status !== 'Cancelado').length;
-            $('kpiOsPendentes').innerText = pendentes;
-
-            // Alertas Stock (Abaixo de 3 unidades)
-            const criticos = dbEstoque.filter(e => e.qtd < 3).length;
-            $('kpiStockCritico').innerText = criticos;
-
-            // Clientes Ativos
-            $('kpiTotalClientes').innerText = dbClientes.length;
-
-            // Atividades recentes simuladas pelo log de servicos
-            const rec = dbServicos.slice(-4).reverse();
-            $('listaAtividadesRecentes').innerHTML = rec.length ? rec.map(s => {
-                const mo = dbMotos.find(m => m.id === s.motoId);
-                return `<div class="list-group-item bg-transparent text-white border-secondary py-3"><div class="d-flex w-100 justify-content-between"><h6 class="mb-1 text-info fw-bold">${s.status}</h6><small class="text-white-50">${new Date(s.data).toLocaleDateString('pt-PT')}</small></div><p class="mb-1 small">A O.S. da mota <strong>${mo?mo.placa:'-'}</strong> foi movida para ${s.status}.</p></div>`;
-            }).join('') : '<p class="text-white-50 p-3">Sem atividade no sistema.</p>';
-        }
-
-        // =========================================================================
-        // 4. MÓDULO DE STOCK
-        // =========================================================================
-        function renderEstoque() {
-            $('tabelaEstoque').innerHTML = dbEstoque.map(i=>`<tr><td><div class="bg-black text-center rounded text-white-50 d-flex justify-content-center align-items-center" style="width:40px;height:40px; border: 1px solid #495057"><i class="bi bi-gear-fill"></i></div></td><td class="fw-bold">${i.nome}</td><td>R$ ${i.custo.toFixed(2)}</td><td class="text-success fw-bold fs-6">R$ ${i.venda.toFixed(2)}</td><td><span class="badge ${i.qtd>2?'bg-primary':'bg-danger px-3'} fs-6">${i.qtd}</span></td><td><button class="btn btn-sm btn-outline-warning border-0 text-warning" onclick="prepararModalPeca('edit','${i.id}')" data-bs-toggle="modal" data-bs-target="#modalPeca"><i class="bi bi-pencil fs-5"></i></button> <button class="btn btn-sm btn-outline-danger border-0 text-danger" onclick="if(confirm('Extinguir referância do sistema?')) db.collection('estoqueItems').doc('${i.id}').delete()"><i class="bi bi-trash fs-5"></i></button></td></tr>`).join('');
-            $('adjItem').innerHTML = '<option value="">O que pretende ajustar?</option>' + dbEstoque.map(i=>`<option value="${i.id}">${i.nome} (Físico: ${i.qtd})</option>`).join('');
-        }
-        function prepararModalPeca(m, id='') {
-            $('formPeca').reset(); if(m==='edit'){ const i=dbEstoque.find(x=>x.id===id); $('pecaId').value=i.id; $('pecaNome').value=i.nome; $('pecaCusto').value=i.custo; $('pecaVenda').value=i.venda; $('pecaQtd').value=i.qtd; } else $('pecaId').value='';
-        }
-        async function salvarPeca(e) {
-            e.preventDefault(); const id=$v('pecaId'); const d = {nome:$v('pecaNome'), custo:parseFloat($v('pecaCusto')), venda:parseFloat($v('pecaVenda')), qtd:parseInt($v('pecaQtd'))};
-            if(id) { await db.collection('estoqueItems').doc(id).update(d); showToast("Ref. Editada."); } else { await db.collection('estoqueItems').add(d); showToast("Nova peça alocada à prateleira!"); } bootstrap.Modal.getInstance($('modalPeca')).hide();
-        }
-        function prepararAjusteStock(t) { $('adjType').value=t; $('stockAdjTitle').innerText=t==='add'?'Lançar Excedente (+ Qtd)':'Declarar Quebra/Perda (- Qtd)'; }
-        async function ajustarEstoque(e) {
-            e.preventDefault(); const id=$v('adjItem'); const t=$v('adjType'); const q=parseInt($v('adjQtd')); const i=dbEstoque.find(x=>x.id===id);
-            if(!id) return; if(t==='remove' && i.qtd<q) return showToast("Rutura: não pode baixar valores superiores ao existente.", "error"); await db.collection('estoqueItems').doc(id).update({qtd: t==='add'?i.qtd+q:i.qtd-q}); bootstrap.Modal.getInstance($('modalAjusteStock')).hide(); showToast("Prateleira calibrada.");
-        }
-
-        // =========================================================================
-        // 5. CRM: CLIENTES & MOTAS
-        // =========================================================================
-        function renderClientes() {
-            $('tabelaClientes').innerHTML = dbClientes.map(c=>`<tr><td class="fw-bold">${c.nome}</td><td>${c.contato}</td><td><span class="text-info">${c.email}</span></td><td><button class="btn btn-sm btn-success fw-bold border-0 shadow-sm" onclick="window.open('https://wa.me/55${c.contato}?text=${encodeURIComponent(`Olá ${c.nome}! A sua app de cliente já está disponível:\\n👉 https://tsvalencio-ia.github.io/EvolutionMotor/clientes/projeto_evolution_24.html \\n\\nE-mail: ${c.email}\\nPIN Secreto: ${c.senhaProv}`)}','_blank')"><i class="bi bi-whatsapp"></i> App Cliente</button> <button class="btn btn-sm btn-outline-warning border-0 ms-1" onclick="prepararModalCliente('edit','${c.id}')" data-bs-toggle="modal" data-bs-target="#modalCliente"><i class="bi bi-pencil fs-5 text-warning"></i></button></td></tr>`).join('');
-            const ops='<option value="">A quem pertence a Viatura?</option>'+dbClientes.map(c=>`<option value="${c.id}">${c.nome}</option>`).join(''); $('osCliente').innerHTML=ops; $('motoDono').innerHTML=ops;
-            $('chatListaClientes').innerHTML = dbClientes.map(c=>`<button class="list-group-item list-group-item-action bg-transparent text-white border-secondary py-3 fs-5" onclick="abrirChat('${c.id}', '${c.nome}')"><i class="bi bi-person-circle text-primary me-3"></i> ${c.nome}</button>`).join('');
-        }
-        function prepararModalCliente(m, id='') {
-            $('formCliente').reset(); if(m==='edit'){ const c=dbClientes.find(x=>x.id===id); $('clienteId').value=c.id; $('clienteNome').value=c.nome; $('clienteContato').value=c.contato; $('clienteEmail').value=c.email; $('clienteSenha').value=c.senhaProv; } else { $('clienteId').value=''; $('clienteSenha').value=Math.random().toString(36).slice(-6); }
-        }
-        async function salvarCliente(e) {
-            e.preventDefault(); const id=$v('clienteId'); const d={nome:$v('clienteNome'), contato:$v('clienteContato'), email:$v('clienteEmail'), senhaProv:$v('clienteSenha')};
-            if(id) await db.collection('clientes').doc(id).update(d); else await db.collection('clientes').add(d); bootstrap.Modal.getInstance($('modalCliente')).hide(); showToast("Perfil Guardado.");
-        }
-        function renderMotos() { $('tabelaMotos').innerHTML = dbMotos.map(m=>{const d=dbClientes.find(x=>x.id===m.clienteId); return `<tr><td><span class="text-warning fw-bold fs-5 px-2 py-1 rounded bg-black border border-warning">${m.placa}</span></td><td>${d?d.nome:'<span class="text-danger">Excluído</span>'}</td><td class="fw-bold text-info">${m.modelo}</td><td>${m.km||'0'} km</td><td><button class="btn btn-sm btn-outline-danger border-0 text-danger" onclick="if(confirm('Imobilizar Viatura Permanentemente?')) db.collection('motos').doc('${m.id}').delete()"><i class="bi bi-trash fs-5"></i></button></td></tr>`; }).join(''); }
-        async function salvarMoto(e) { e.preventDefault(); await db.collection('motos').add({clienteId:$v('motoDono'), modelo:$v('motoModelo'), placa:$v('motoPlaca').toUpperCase(), km:$v('motoKm')}); bootstrap.Modal.getInstance($('modalMoto')).hide(); showToast("Viatura alocada ao cliente."); }
-
-        // =========================================================================
-        // 6. EQUIPA E FORNECEDORES
-        // =========================================================================
-        function renderFuncionarios() { $('tabelaFuncionarios').innerHTML = dbFuncionarios.map(f=>`<tr><td class="fw-bold"><i class="bi bi-person-fill-gear me-2 text-primary"></i> ${f.nome}</td><td><span class="badge bg-secondary fs-6">${f.funcao}</span></td><td><button class="btn btn-sm btn-outline-danger border-0" onclick="db.collection('funcionarios').doc('${f.id}').delete()"><i class="bi bi-trash fs-5"></i></button></td></tr>`).join(''); $('osMec').innerHTML='<option value="">Ainda S/ Técnico</option>'+dbFuncionarios.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
-        function salvarFunc(e) { e.preventDefault(); db.collection('funcionarios').add({nome:$v('funcNome'), funcao:$v('funcCargo')}); bootstrap.Modal.getInstance($('modalFuncionario')).hide(); }
-
-        function renderFornecedores() { $('tabelaFornecedores').innerHTML = dbFornecedores.map(f=>`<tr><td class="fw-bold">${f.nome}</td><td><span class="text-white-50">${f.cat}</span></td><td><button class="btn btn-sm btn-outline-danger border-0" onclick="db.collection('fornecedores').doc('${f.id}').delete()"><i class="bi bi-trash fs-5"></i></button></td></tr>`).join(''); $('compraForn').innerHTML='<option value="">A qual empresa comprou?</option>'+dbFornecedores.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
-        function salvarFornecedor(e) { e.preventDefault(); db.collection('fornecedores').add({nome:$v('fornNome'), cat:$v('fornCat')}); bootstrap.Modal.getInstance($('modalFornecedor')).hide(); }
-
-        // =========================================================================
-        // 7. COMPRAS NFs E BOLETOS (STOCK E CAIXA)
-        // =========================================================================
-        function prepararModalCompra() { $('formCompra').reset(); $('compraData').value=new Date().toISOString().split('T')[0]; $('containerPecasCompra').innerHTML=''; $('compraTotalVisual').innerText='0.00'; $('compraTotalFinal').value=0; verificarPgtoCompra(); adicionarPecaCompra(); }
-        function adicionarPecaCompra() {
-            const div = document.createElement('div'); div.className='d-flex gap-3 p-3 bg-black rounded-4 border border-secondary align-items-center item-compra';
-            div.innerHTML=`<select class="form-select form-select-lg border-secondary comp-peca text-white" required><option value="">Item Adquirido...</option>${dbEstoque.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('')}</select><input type="number" class="form-control form-control-lg border-secondary text-center comp-qtd text-white fw-bold" placeholder="Qtd" required min="1" style="width: 100px;"><input type="number" step="0.01" class="form-control form-control-lg border-secondary fw-bold text-danger comp-custo" placeholder="Preço Lote" required style="width: 140px;" oninput="calcularTotalCompra()"><button type="button" class="btn btn-danger btn-lg shadow" onclick="this.parentElement.remove(); calcularTotalCompra()"><i class="bi bi-x-lg"></i></button>`;
-            $('containerPecasCompra').appendChild(div);
-        }
-        function calcularTotalCompra() { let t=0; document.querySelectorAll('.item-compra').forEach(el=>{ const q=parseInt(el.querySelector('.comp-qtd').value)||0; const c=parseFloat(el.querySelector('.comp-custo').value)||0; t+=(q*c); }); $('compraTotalVisual').innerText=t.toFixed(2); $('compraTotalFinal').value=t.toFixed(2); }
-        function verificarPgtoCompra() { const f=$v('compraPgtoForma'); if(f==='Cartão de Crédito' || f==='Boleto Bancário') $('compraDivParcelas').style.display='block'; else $('compraDivParcelas').style.display='none'; }
-        
-        async function salvarCompra(e) {
-            e.preventDefault(); const forId=$v('compraForn'); if(!forId) return; const n=dbFornecedores.find(x=>x.id===forId).nome; const nf=$v('compraNF'); const total=parseFloat($v('compraTotalFinal')); const dt=$v('compraData'); const itens=[];
-            document.querySelectorAll('.item-compra').forEach(el=>{ const id=el.querySelector('.comp-peca').value; if(id) itens.push({id:id, qtd:parseInt(el.querySelector('.comp-qtd').value)}); });
-            if(itens.length===0) return showToast("Dossier de fatura não pode estar vazio.", "error");
-
-            for(let i of itens) { const pEst=dbEstoque.find(x=>x.id===i.id); if(pEst) await db.collection('estoqueItems').doc(i.id).update({qtd: pEst.qtd + i.qtd}); }
-            
-            const fp = $v('compraPgtoForma'); const par = (fp==='Cartão de Crédito' || fp==='Boleto Bancário') ? ` (${$v('compraParcelas')})` : '';
-            const statusPagto = fp === 'Boleto Bancário' ? 'Pendente' : 'Pago'; 
-            
-            await db.collection('financeiroItems').add({tipo:'Saída', descricao:`NF Fatura Fornecedor: ${n}`, valor:total, data:dt, originType:'Dossier Compras', nota_documento:nf, pagto: fp+par, status: statusPagto}); 
-            
-            $('tabelaHistoricoCompras').insertAdjacentHTML('afterbegin', `<tr><td>${new Date(dt).toLocaleDateString('pt-PT')}</td><td>${n}</td><td class="text-warning fw-bold">${nf}</td><td><span class="badge bg-dark border border-secondary p-2">${fp}</span></td><td class="text-danger fw-bold fs-5">R$ ${total.toFixed(2)}</td></tr>`);
-            bootstrap.Modal.getInstance($('modalCompra')).hide(); showToast("Prateleiras abastecidas e fatura averbada no Financeiro!", "success");
-        }
-
-        // =========================================================================
-        // 8. A ALMA: ORDEM DE SERVIÇO (KPI PNEUS E COBRANÇAS)
-        // =========================================================================
-        function loadOsMotos() { const cid=$v('osCliente'); $('osMoto').innerHTML='<option value="">Aguardar Mota...</option>'+dbMotos.filter(m=>m.clienteId===cid).map(m=>`<option value="${m.id}">${m.modelo} (${m.placa})</option>`).join(''); }
-        function adicionarPecaOS() {
-            const div = document.createElement('div'); div.className='d-flex mb-3 gap-3 p-3 bg-black rounded-4 border border-secondary item-os-peca align-items-center shadow-inner';
-            div.innerHTML=`<select class="form-select form-select-lg border-secondary os-peca-sel text-white bg-dark" onchange="calcOsTotal()"><option value="">Aceder ao Inventário...</option>${dbEstoque.map(i=>`<option value="${i.id}" data-p="${i.venda}">${i.nome} - R$ ${i.venda.toFixed(2)} (Em armazém: ${i.qtd})</option>`).join('')}</select><input type="number" class="form-control form-control-lg border-secondary text-center os-peca-qtd fw-bold text-info bg-dark" style="width:110px" value="1" min="1" oninput="calcOsTotal()"><button type="button" class="btn btn-danger btn-lg shadow" onclick="this.parentElement.remove(); calcOsTotal()"><i class="bi bi-trash"></i></button>`;
-            $('containerPecasOS').appendChild(div);
-        }
-        function calcOsTotal() {
-            let m=parseFloat($v('osMaoObra'))||0; let p=0; document.querySelectorAll('.item-os-peca').forEach(el=>{ const s=el.querySelector('.os-peca-sel'); if(s.value) p+=parseFloat(s.options[s.selectedIndex].getAttribute('data-p'))*parseInt(el.querySelector('.os-peca-qtd').value); });
-            const t = m+p; $('osTotalValor').innerText=t.toFixed(2); $('osTotalHidden').value=t.toFixed(2);
-        }
-        function verificarStatusOS() { if($v('osStatus')==='Concluido') $('areaPagamentoOS').classList.remove('d-none'); else $('areaPagamentoOS').classList.add('d-none'); }
-        function verificarFormaPagamentoOS() { const f=$v('osPgtoForma'); if(f==='Cartão de Crédito'||f==='Boleto Bancário') $('osDivParcelas').style.display='block'; else $('osDivParcelas').style.display='none'; }
-
-        function renderOS() {
-            const c=$('listaAgendamentos'); c.innerHTML=''; if(dbServicos.length===0){ c.innerHTML='<div class="col-12 py-5 text-center text-white-50"><i class="bi bi-card-heading display-1 d-block mb-3 opacity-50"></i><h4 class="fw-normal">Fila de trabalho mecânico livre.</h4></div>'; return; }
-            dbServicos.sort((a,b)=>new Date(b.data)-new Date(a.data)).forEach(os=>{
-                const cl=dbClientes.find(x=>x.id===os.clienteId); const mt=dbMotos.find(x=>x.id===os.motoId); const cls=`status-${os.status.toLowerCase().replace(/\s/g,'-')}`;
-                let ic='bi-wrench text-warning'; if(os.status==='Concluido') ic='bi-patch-check-fill text-success'; if(os.status==='Cancelado') ic='bi-x-circle-fill text-danger';
-                c.innerHTML+=`<div class="col-md-6 col-lg-4"><div class="servico-card ${cls} d-flex flex-column h-100 shadow-lg position-relative"><div class="d-flex justify-content-between mb-3"><h5 class="mb-0 fw-bold"><i class="bi bi-person-bounding-box me-2 text-white-50"></i>${cl?cl.nome:'Cliente N/A'}</h5><span class="badge bg-black border border-secondary pt-2 px-3">${new Date(os.data).toLocaleDateString('pt-PT')}</span></div><p class="text-warning fw-bold fs-5 mb-2 pb-2 border-bottom border-secondary"><i class="bi bi-scooter me-2"></i>${mt?mt.placa:'-'} <small class="text-white-50 fs-6 fw-normal">(${mt?mt.modelo:'-'})</small></p><p class="small text-white-50 flex-grow-1 lh-sm mt-3 fst-italic">"${os.desc}"</p><div class="bg-black p-3 rounded-4 mb-4 border border-secondary text-center shadow-inner mt-2"><span class="d-block fw-bold mb-2 fs-6 text-white"><i class="${ic} me-2 fs-5"></i> ${os.status.toUpperCase()}</span><span class="fs-2 text-success fw-bold">R$ ${os.total.toFixed(2)}</span></div><button class="btn btn-outline-light fw-bold w-100 py-3 shadow border-0 rounded-pill" style="background: linear-gradient(to right, #495057, #343a40); color:#fff !important;" onclick="prepararModalOS('edit','${os.id}')" data-bs-toggle="modal" data-bs-target="#modalOS"><i class="bi bi-folder2-open me-2 text-warning"></i> INSPECIONAR FICHA TÉCNICA</button></div></div>`;
-            });
-        }
-
-        function prepararModalOS(m, id='') {
-            $('formOS').reset(); $('containerPecasOS').innerHTML=''; $('osData').value=new Date().toISOString().split('T')[0]; $('osTotalValor').innerText="0.00"; $('osTotalHidden').value=0; verificarStatusOS(); verificarFormaPagamentoOS(); try{new bootstrap.Tab(document.querySelector('#formOS .nav-link[data-bs-target="#osGeral"]')).show();}catch(e){}
-            if(m==='edit') {
-                const os=dbServicos.find(x=>x.id===id); $('osId').value=os.id; $('osCliente').value=os.clienteId; loadOsMotos(); $('osMoto').value=os.motoId; $('osDescricao').value=os.desc; $('osStatus').value=os.status; $('osMec').value=os.mecId||''; $('osMaoObra').value=os.maoObra||0;
-                if(os.pecas){ os.pecas.forEach(p=>{ adicionarPecaOS(); const ss=document.querySelectorAll('.os-peca-sel'); const ls=ss[ss.length-1]; ls.value=p.id; ls.nextElementSibling.value=p.qtd; }); }
-                if(os.check){ 
-                    $('chkComb').value=os.check.comb; $('chkPainel').checked=os.check.painel; $('chkPneusOk').checked=os.check.pneus; $('chkCare').checked=os.check.care; $('chkObs').value=os.check.obs||''; 
-                    if(os.check.pneuDia !== undefined) $('chkPneuDia').value = os.check.pneuDia;
-                    if(os.check.pneuTra !== undefined) $('chkPneuTra').value = os.check.pneuTra;
-                }
-                calcOsTotal(); verificarStatusOS();
-            } else $('osId').value='';
-        }
-
-        async function salvarOS(e) {
-            e.preventDefault(); const id=$v('osId'); const sts=$v('osStatus'); const tot=parseFloat($v('osTotalHidden')); const arrP=[]; document.querySelectorAll('.item-os-peca').forEach(el=>{ const ids=el.querySelector('.os-peca-sel').value; if(ids) arrP.push({id:ids, qtd:parseInt(el.querySelector('.os-peca-qtd').value)}); });
-            const d = { 
-                clienteId:$v('osCliente'), motoId:$v('osMoto'), desc:$v('osDescricao'), status:sts, mecId:$v('osMec'), data:$v('osData'), maoObra:parseFloat($v('osMaoObra')), total:tot, pecas:arrP, 
-                check: { comb:$v('chkComb'), painel:$('chkPainel').checked, pneus:$('chkPneusOk').checked, care:$('chkCare').checked, obs:$v('chkObs'), pneuDia: parseInt($v('chkPneuDia'))||0, pneuTra: parseInt($v('chkPneuTra'))||0 } 
-            };
-
-            // GESTÃO FINAL (SE CONCLUÍDO): BAIXA DE PEÇAS E FATURAÇÃO
-            if (sts==='Concluido') {
-                const isNova = (!id || dbServicos.find(x=>x.id===id).status!=='Concluido');
-                if (isNova) {
-                    let err = false; arrP.forEach(p=>{ const es=dbEstoque.find(x=>x.id===p.id); if(!es || es.qtd<p.qtd) err=true; });
-                    if(err) return showToast("Transação Interrompida: Stock negativo detetado numa ou mais peças da OS. Faça o ajuste.", "error");
+            try {
+                const snapshot = await db.collection('oficinas').where('usuario', '==', usr).where('senha', '==', pwd).get();
+                if(snapshot.empty) {
+                    showToast('Credenciais inválidas ou não localizadas.');
+                } else {
+                    const doc = snapshot.docs[0];
+                    const dados = doc.data();
                     
-                    arrP.forEach(p=>{ const es=dbEstoque.find(x=>x.id===p.id); db.collection('estoqueItems').doc(p.id).update({qtd: es.qtd-p.qtd}); });
-                    
-                    const fp = $v('osPgtoForma'); const pa = (fp==='Cartão de Crédito'||fp==='Boleto Bancário')?` (Parc/Prazo: ${$v('osPgtoParcelas')})`:'';
-                    const mo = $('osMoto').options[$('osMoto').selectedIndex].text;
-                    const stsPgto = fp === 'Boleto Bancário' ? 'Pendente' : 'Pago';
-
-                    await db.collection('financeiroItems').add({tipo:'Entrada', descricao:`Fatura Manutenção - Viatura: ${mo}`, valor:tot, data:new Date().toISOString().split('T')[0], originType:'Fatura Oficina (OS)', pagto:fp+pa, status:stsPgto, originId:id||'nova'}); 
-                    showToast("Ordem Fechada! Peças descontadas e fatura gerada no Caixa.", "success");
+                    if(dados.status === 'Bloqueado') {
+                        showToast('Licença Bloqueada. Contate a thIAguinho Soluções.');
+                    } else {
+                        sessionStorage.setItem('evo_tenant_id', doc.id);
+                        sessionStorage.setItem('evo_tenant_nome', dados.nomeFantasia);
+                        sessionStorage.setItem('evo_tenant_mods', JSON.stringify(dados.modulos || {}));
+                        window.location.href = 'admin.html';
+                    }
                 }
+            } catch (err) {
+                console.error(err);
+                showToast('Erro de conexão com a Nuvem.');
             }
-            if(id) await db.collection('servicos').doc(id).update(d); else await db.collection('servicos').add(d); bootstrap.Modal.getInstance($('modalOS')).hide();
+            btn.innerHTML = 'ENTRAR NO SISTEMA';
+            btn.disabled = false;
         }
-
-        // =========================================================================
-        // 9. FINANCEIRO (BOLETOS PENDENTES E BAIXA DE DÍVIDAS)
-        // =========================================================================
-        function renderCaixa() {
-            let e=0, s=0; $('tabelaCaixa').innerHTML=dbFinanceiro.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(t=>{ 
-                // Soma para KPIs apenas o que está "Pago" na realidade
-                if(t.status === 'Pago' || !t.status) { if(t.tipo==='Entrada') e+=t.valor; else s+=t.valor; }
-                
-                const fp = t.pagto ? `<span class="badge bg-black border border-secondary p-2 text-white-50">${t.pagto}</span>` : ''; 
-                const nfe = t.nota_documento ? `<br><small class="text-warning fw-bold">NF/Doc: ${t.nota_documento}</small>` : '';
-                
-                let stsBadge = t.status === 'Pago' || !t.status ? `<span class="badge bg-success p-2"><i class="bi bi-check-all fs-6"></i> Concluído</span>` : `<span class="badge bg-warning text-dark border border-warning p-2"><i class="bi bi-hourglass-split fs-6"></i> Por Liquidar</span>`;
-                let bBaixa = t.status === 'Pendente' ? `<button class="btn btn-sm btn-success fw-bold shadow me-2 mb-1" onclick="darBaixaFin('${t.id}')" title="Assinalar como Liquidado"><i class="bi bi-cash-coin me-1"></i> Dar Baixa</button>` : '';
-
-                return `<tr class="${t.tipo==='Entrada'?'table-success text-success':'table-danger text-danger'}"><td class="text-white-50">${new Date(t.data).toLocaleDateString('pt-PT')}</td><td class="fw-bold"><i class="bi ${t.tipo==='Entrada'?'bi-arrow-up-circle-fill':'bi-arrow-down-circle-fill'} fs-4 me-2"></i> ${t.tipo}</td><td class="text-white">${t.descricao}${nfe}</td><td>${fp}</td><td class="fw-bold fs-4">R$ ${t.valor.toFixed(2)}</td><td>${stsBadge}</td><td>${bBaixa}${!t.originType?`<button class="btn btn-sm btn-outline-danger border-0 shadow mb-1" onclick="if(confirm('Extinguir lançamento manual?')) db.collection('financeiroItems').doc('${t.id}').delete()"><i class="bi bi-x-square-fill fs-5"></i></button>`:'<i class="bi bi-shield-lock-fill fs-5 text-secondary ms-2" title="Bloqueado por Regra de Negócio"></i>'}</td></tr>`; 
-            }).join('');
-            $('caixaEntradas').innerText=`R$ ${e.toFixed(2)}`; $('caixaSaidas').innerText=`R$ ${s.toFixed(2)}`; $('caixaSaldo').innerText=`R$ ${(e-s).toFixed(2)}`; if(e-s<0) $('caixaSaldo').classList.add('text-danger'); else $('caixaSaldo').classList.remove('text-danger');
-        }
-        
-        async function salvarFinManual(ev) { ev.preventDefault(); await db.collection('financeiroItems').add({tipo:$v('finTipo'), descricao:$v('finDesc'), valor:parseFloat($v('finValor')), data:$v('finData'), pagto:$v('finPgto'), status:$v('finStatus')}); bootstrap.Modal.getInstance($('modalFinanceiro')).hide(); showToast("Caixa intervencionado."); }
-
-        async function darBaixaFin(id) {
-            if(confirm("Confirma que o Cliente/Fornecedor já liquidou esta transação? A mesma entrará no Saldo Real do Caixa.")) {
-                await db.collection('financeiroItems').doc(id).update({status: 'Pago'});
-                showToast("Dívida/Boleto assinalado como pago!", "success");
-            }
-        }
-
-        // =========================================================================
-        // 10. CRM: CHAT EM TEMPO REAL SÉNIOR (100% BLINDADO NA MEMÓRIA)
-        // =========================================================================
-        let chatActiveClienteId = null;
-        function abrirChat(id, nm) {
-            chatActiveClienteId=id; $('chatNomeCliente').innerHTML = `<span class="text-white">Em conversação com:</span> <b class="text-accent fs-4" style="color:var(--bs-accent)">${nm}</b>`; $('chatAreaInput').style.display='flex'; const a=$('chatMessagesArea'); a.innerHTML='';
-            
-            const msgsDaPessoa = dbMensagens.filter(x=>x.clienteId===id);
-            if(msgsDaPessoa.length===0) { 
-                a.innerHTML='<div class="text-center text-white-50 mt-5 pt-5"><i class="bi bi-headset display-1 d-block mb-4 opacity-50"></i><p class="fs-4">A linha com este cliente está desimpedida.</p></div>'; 
-            } else { 
-                msgsDaPessoa.forEach(x=>{ 
-                    const t=x.timestamp?new Date(x.timestamp.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'agora'; 
-                    a.innerHTML+=`<div class="message ${x.sender==='admin'?'admin shadow-lg':'cliente shadow-sm'}">${x.text}<small>${t}</small></div>`; 
-                }); 
-                a.scrollTop=a.scrollHeight; 
-            }
-        }
-        
-        async function enviarChat() { const v=$v('inputChatAdmin').trim(); if(!v||!chatActiveClienteId) return; await db.collection('mensagens').add({clienteId:chatActiveClienteId, sender:'admin', text:v, timestamp:firebase.firestore.FieldValue.serverTimestamp()}); $('inputChatAdmin').value=''; }
-
     </script>
 </body>
 </html>
