@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Portal - Evolution Motors</title>
+    <title>Evolution - Garagem Online</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -22,7 +22,7 @@
         .kpi-card { padding: 20px; border-radius: 12px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3);}
         .os-box { background-color: #1e293b; padding: 20px; border-radius: 12px; border-left: 5px solid var(--bs-accent); margin-bottom: 20px; border-top: 1px solid #334155; border-right: 1px solid #334155; border-bottom: 1px solid #334155;}
         
-        .chat-app { background-color: #1e293b; border-radius: 12px; border: 1px solid #334155; overflow: hidden; height: 400px; display: flex; flex-direction: column; }
+        .chat-app { background-color: #1e293b; border-radius: 12px; border: 1px solid #334155; overflow: hidden; height: 500px; display: flex; flex-direction: column; }
         .chat-view { flex-grow: 1; padding: 15px; overflow-y: auto; background-color: #0f172a; }
         .msg { max-width: 85%; padding: 12px; border-radius: 12px; margin-bottom: 10px; font-size: 0.95rem; }
         .msg.cliente { background-color: var(--bs-accent); align-self: flex-end; margin-left: auto; border-bottom-right-radius: 0; }
@@ -30,10 +30,11 @@
         .msg small { display: block; text-align: right; opacity: 0.7; font-size: 0.7rem; margin-top: 4px; }
         .chat-send { display: flex; padding: 10px; background-color: #1e293b; border-top: 1px solid #334155; }
         
-        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 15px;}
-        .media-grid img, .media-grid video { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #334155; }
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 15px;}
+        .media-grid img, .media-grid video { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #334155; cursor: pointer; transition: transform 0.2s;}
+        .media-grid img:hover { transform: scale(1.05); }
         
-        .modal-content { background-color: #1e293b; color: white; border: 1px solid #334155; }
+        .modal-content { background-color: #1e293b; color: white; border: 1px solid #334155; border-radius: 12px;}
         .modal-header { border-bottom: 1px solid #334155; background-color: #0f172a; }
         .btn-close { filter: invert(1); }
     </style>
@@ -42,27 +43,27 @@
     <div id="loginScreen" class="d-flex flex-column justify-content-center align-items-center vh-100 p-3">
         <div class="text-center mb-4">
             <h1 style="color: var(--bs-accent); font-weight: 900; letter-spacing: 2px;"><i class="bi bi-hexagon-fill"></i> EVOLUTION</h1>
-            <h5 class="text-white-50">Portal Exclusivo do Cliente</h5>
+            <h5 class="text-white-50">O App Oficial do Motociclista</h5>
         </div>
-        <div class="card p-4 w-100" style="max-width: 400px;">
+        <div class="card p-4 w-100 shadow-lg" style="max-width: 400px;">
             <form onsubmit="entrar(event)">
                 <div class="mb-3">
-                    <label class="form-label text-white-50 fw-bold small">E-mail Cadastrado</label>
-                    <input type="email" class="form-control form-control-lg" id="loginEmail" required>
+                    <label class="form-label text-white-50 fw-bold small text-uppercase">E-mail Cadastrado</label>
+                    <input type="email" class="form-control form-control-lg" id="loginEmail" required placeholder="Digite o seu E-mail">
                 </div>
                 <div class="mb-4">
-                    <label class="form-label text-white-50 fw-bold small">PIN de Acesso</label>
-                    <input type="password" class="form-control form-control-lg" id="loginSenha" required>
+                    <label class="form-label text-white-50 fw-bold small text-uppercase">Chave de Segurança / PIN</label>
+                    <input type="password" class="form-control form-control-lg" id="loginSenha" required placeholder="Fornecido pela sua Oficina">
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-lg" id="btnEntrar">ACESSAR GARAGEM</button>
+                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-lg" id="btnEntrar"><i class="bi bi-unlock-fill me-2"></i> ACESSAR GARAGEM</button>
             </form>
         </div>
     </div>
 
     <div id="appPanel" class="flex-column" style="display: none; flex-grow: 1;">
-        <nav class="navbar navbar-dark px-4 py-3" style="background-color: #1e293b !important; border-bottom: 2px solid var(--bs-accent);">
-            <span class="navbar-brand fw-bold" style="color: #fff !important;"><i class="bi bi-speedometer me-2 text-warning"></i> Meu Portal</span>
-            <button class="btn btn-outline-danger btn-sm fw-bold border-0" onclick="window.location.reload()"><i class="bi bi-power"></i> Sair</button>
+        <nav class="navbar navbar-dark px-4 py-3 shadow" style="background-color: #1e293b !important; border-bottom: 2px solid var(--bs-accent);">
+            <span class="navbar-brand fw-bold fs-4" style="color: #fff !important;"><i class="bi bi-speedometer me-2 text-warning"></i> O Meu Veículo</span>
+            <button class="btn btn-outline-danger fw-bold border-0 px-4" onclick="window.location.reload()"><i class="bi bi-power me-2"></i> Terminar Sessão</button>
         </nav>
         
         <div class="container mt-4 pb-5 flex-grow-1">
@@ -71,14 +72,14 @@
             <div class="row g-4 mb-5">
                 <div class="col-md-6">
                     <div class="kpi-card shadow-sm border-info">
-                        <p class="text-white-50 fw-bold mb-2 small text-uppercase"><i class="bi bi-wallet2 text-info"></i> Investimento Global</p>
-                        <h2 id="kpiGastoTotal" class="fw-bold mb-0 text-info">R$ 0,00</h2>
+                        <p class="text-white-50 fw-bold mb-2 small text-uppercase"><i class="bi bi-wallet2 text-info fs-5 me-1"></i> Total Investido nas Manutenções</p>
+                        <h2 id="kpiGastoTotal" class="fw-bold mb-0 text-info display-6">R$ 0,00</h2>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="kpi-card shadow-sm border-success" id="kpiAlerta">
-                        <p class="text-white-50 fw-bold mb-2 small text-uppercase"><i class="bi bi-shield-check text-success"></i> Status da Manutenção</p>
-                        <h2 id="kpiStatus" class="fw-bold mb-1 text-success">Sincronizando...</h2>
+                        <p class="text-white-50 fw-bold mb-2 small text-uppercase"><i class="bi bi-shield-check text-success fs-5 me-1"></i> Risco Global / Segurança da Moto</p>
+                        <h2 id="kpiStatus" class="fw-bold mb-1 text-success fs-3">Monitorizando...</h2>
                         <small id="kpiSubStatus" class="text-white-50"></small>
                     </div>
                 </div>
@@ -86,20 +87,20 @@
 
             <div class="row g-4">
                 <div class="col-lg-6">
-                    <h4 class="mb-3 border-bottom border-secondary pb-2"><i class="bi bi-tools text-warning me-2"></i> Meus Serviços na Oficina</h4>
+                    <h4 class="mb-3 border-bottom border-secondary pb-2 text-white"><i class="bi bi-tools text-warning me-2"></i> Intervenções na Oficina</h4>
                     <div id="boxServicos" class="mb-5"></div>
 
-                    <h4 class="mb-3 border-bottom border-secondary pb-2"><i class="bi bi-scooter text-info me-2"></i> Minhas Motos</h4>
+                    <h4 class="mb-3 border-bottom border-secondary pb-2 text-white"><i class="bi bi-scooter text-info me-2"></i> Ficha da Viatura</h4>
                     <div class="row g-3" id="boxMotos"></div>
                 </div>
 
                 <div class="col-lg-6">
-                    <h4 class="mb-3 border-bottom border-secondary pb-2"><i class="bi bi-chat-right-text text-primary me-2"></i> Canal Direto com o Mecânico</h4>
+                    <h4 class="mb-3 border-bottom border-secondary pb-2 text-white"><i class="bi bi-chat-right-text text-primary me-2"></i> Contato Direto (Mecânico)</h4>
                     <div class="chat-app shadow-lg">
                         <div class="chat-view d-flex flex-column" id="chatAreaMsg"></div>
-                        <div class="chat-send">
-                            <input type="text" class="form-control rounded-pill px-3" id="chatInputMsg" placeholder="Escreva a sua mensagem...">
-                            <button class="btn btn-primary rounded-circle ms-2 shadow" style="width: 45px; height: 45px;" onclick="enviarMensagem()"><i class="bi bi-send-fill"></i></button>
+                        <div class="chat-send p-3 bg-dark">
+                            <input type="text" class="form-control form-control-lg rounded-pill px-4 text-white border-secondary" id="chatInputMsg" placeholder="Escreva a sua dúvida ou mensagem...">
+                            <button class="btn btn-primary rounded-circle ms-3 shadow-lg d-flex align-items-center justify-content-center" style="width: 55px; height: 55px;" onclick="enviarMensagem()"><i class="bi bi-send-fill fs-5 text-dark"></i></button>
                         </div>
                     </div>
                 </div>
@@ -107,13 +108,12 @@
         </div>
     </div>
 
-    <!-- Modal Checklist e Fotos Cliente -->
     <div class="modal fade" id="modalChecklistCliente" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold"><i class="bi bi-clipboard2-data text-warning me-2"></i> Auditoria da Oficina</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow-lg border-warning" style="border-width: 2px;">
+                <div class="modal-header bg-dark py-3 border-bottom border-warning">
+                    <h4 class="modal-title fw-bold text-warning"><i class="bi bi-clipboard2-check me-2"></i> Transparência Automotiva</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4 bg-dark" id="corpoLaudo"></div>
             </div>
@@ -134,25 +134,33 @@
             const em = document.getElementById('loginEmail').value.trim();
             const pw = document.getElementById('loginSenha').value.trim();
             const btn = document.getElementById('btnEntrar');
-            btn.innerHTML = "Sincronizando Nuvem..."; btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> A LER A BASE DE DADOS...'; btn.disabled = true;
 
             try {
-                const snapshot = await db.collection('clientes').where('email', '==', em).where('senhaProv', '==', pw).get();
+                // Segurança Sênior: Retira o compound where() para evitar erro de índice
+                const snapshot = await db.collection('clientes').where('email', '==', em).get();
                 if (snapshot.empty) {
-                    alert("Acesso Negado: E-mail ou PIN Incorretos.");
-                    btn.innerHTML = "ACESSAR GARAGEM"; btn.disabled = false;
+                    alert("Ops! O E-mail não foi localizado.");
+                    btn.innerHTML = '<i class="bi bi-unlock-fill me-2"></i> ACESSAR GARAGEM'; btn.disabled = false;
                 } else {
-                    const dados = snapshot.docs[0].data();
-                    idMeuCliente = snapshot.docs[0].id;
-                    meuTenant = dados.tenantId;
+                    const doc = snapshot.docs[0];
+                    const dados = doc.data();
                     
-                    document.getElementById('loginScreen').style.display = 'none';
-                    document.getElementById('appPanel').style.display = 'flex';
-                    document.getElementById('boasVindas').innerHTML = `Bem-vindo de volta, <span class="text-warning">${dados.nome}</span>!`;
-                    
-                    iniciarAppEmTempoReal();
+                    if(dados.senhaProv !== pw) {
+                        alert("PIN Incorreto.");
+                        btn.innerHTML = '<i class="bi bi-unlock-fill me-2"></i> ACESSAR GARAGEM'; btn.disabled = false;
+                    } else {
+                        idMeuCliente = doc.id;
+                        meuTenant = dados.tenantId;
+                        
+                        document.getElementById('loginScreen').style.display = 'none';
+                        document.getElementById('appPanel').style.display = 'flex';
+                        document.getElementById('boasVindas').innerHTML = `Bem-vindo de volta, <span class="text-warning">${dados.nome}</span>! <i class="bi bi-emoji-smile text-warning ms-1"></i>`;
+                        
+                        iniciarAppEmTempoReal();
+                    }
                 }
-            } catch (err) { alert("Erro de rede."); btn.innerHTML = "ACESSAR GARAGEM"; btn.disabled = false; }
+            } catch (err) { console.error(err); alert("Sinal de Nuvem Perdido. Verifique o Wi-Fi."); btn.innerHTML = "ACESSAR GARAGEM"; btn.disabled = false; }
         }
 
         function iniciarAppEmTempoReal() {
@@ -165,11 +173,11 @@
                 
                 const area = document.getElementById('chatAreaMsg'); area.innerHTML = '';
                 if(msgs.length === 0) {
-                    area.innerHTML = '<div class="text-center text-white-50 mt-5"><i class="bi bi-chat-square-dots fs-1"></i><br>Envie a primeira mensagem para o seu mecânico.</div>';
+                    area.innerHTML = '<div class="text-center text-white-50 mt-5 pt-5"><i class="bi bi-chat-square-dots display-1 mb-4 opacity-50"></i><p class="fs-5">Dúvidas sobre o orçamento? A Oficina está online, envie a sua mensagem aqui.</p></div>';
                 } else {
                     msgs.forEach(m => {
                         const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : 'agora';
-                        area.innerHTML += `<div class="msg ${m.sender==='cliente'?'cliente shadow':'admin shadow'}">${m.text}<small>${time}</small></div>`;
+                        area.innerHTML += `<div class="msg ${m.sender==='cliente'?'cliente shadow-lg':'admin shadow-lg border border-secondary'}">${m.text}<small>${time}</small></div>`;
                     });
                     area.scrollTop = area.scrollHeight;
                 }
@@ -178,16 +186,16 @@
 
         function renderizarPainel() {
             const boxM = document.getElementById('boxMotos');
-            if(minhasMotos.length === 0) boxM.innerHTML = '<div class="col-12"><p class="text-white-50 p-3 bg-dark rounded border border-secondary">Sem veículos vinculados.</p></div>';
+            if(minhasMotos.length === 0) boxM.innerHTML = '<div class="col-12"><p class="text-white-50 p-4 bg-dark rounded-4 border border-secondary text-center"><i class="bi bi-slash-circle me-2"></i> Não tem nenhuma mota no seu nome.</p></div>';
             else {
                 boxM.innerHTML = minhasMotos.map(m => `
                     <div class="col-12">
-                        <div class="p-3 bg-dark rounded-4 border border-secondary d-flex align-items-center gap-3 shadow-sm">
-                            <div class="p-3 rounded-circle bg-black border border-secondary"><i class="bi bi-scooter fs-2 text-white-50"></i></div>
+                        <div class="p-4 bg-dark rounded-4 border border-secondary d-flex align-items-center gap-4 shadow-sm">
+                            <div class="p-3 rounded-circle bg-black border border-secondary shadow-inner"><i class="bi bi-scooter display-4 text-white-50"></i></div>
                             <div>
-                                <h5 class="fw-bold mb-1 text-info">${m.modelo}</h5>
-                                <span class="badge bg-black border border-warning text-warning mb-1 px-2">${m.placa}</span>
-                                <p class="text-white-50 mb-0 small fw-bold">KM Atual: ${m.km || '0'}</p>
+                                <h4 class="fw-bold mb-1 text-info">${m.modelo}</h4>
+                                <span class="badge bg-black border border-warning text-warning mb-2 px-3 py-2 fs-6 shadow-sm">${m.placa}</span>
+                                <p class="text-white-50 mb-0 mt-1 small fw-bold"><i class="bi bi-speedometer2 me-1"></i> Aos ${m.km || '0'} Quilómetros</p>
                             </div>
                         </div>
                     </div>
@@ -196,20 +204,20 @@
 
             const boxOS = document.getElementById('boxServicos');
             const osAndamento = meusServicos.filter(s => s.status !== 'Concluido' && s.status !== 'Cancelado');
-            if(osAndamento.length === 0) boxOS.innerHTML = '<div class="p-4 bg-dark rounded-4 border border-secondary text-center text-white-50"><i class="bi bi-check-circle fs-1 text-success d-block mb-2"></i>A sua mota não se encontra na oficina.</div>';
+            if(osAndamento.length === 0) boxOS.innerHTML = '<div class="p-5 bg-dark rounded-4 border border-secondary text-center text-white-50 shadow-inner"><i class="bi bi-shield-check display-1 text-success d-block mb-3 opacity-75"></i><h4 class="fw-normal">Tudo limpo! Nenhuma O.S. a decorrer na mecânica.</h4></div>';
             else {
                 boxOS.innerHTML = osAndamento.map(os => {
                     const mot = minhasMotos.find(x=>x.id===os.motoId);
-                    const btn = `<button class="btn btn-outline-info btn-sm w-100 fw-bold mt-3 py-2" onclick="abrirLaudo('${os.id}')"><i class="bi bi-search me-1"></i> Acompanhar Auditoria / Fotos</button>`;
+                    const btn = `<button class="btn btn-outline-info btn-lg w-100 fw-bold mt-4 py-3 rounded-pill shadow-lg border-2" onclick="abrirLaudo('${os.id}')"><i class="bi bi-camera-reels-fill me-2"></i> FOTOS E LAUDO DE INSPEÇÃO TÉCNICA</button>`;
                     return `
-                    <div class="os-box shadow-lg position-relative overflow-hidden">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="fw-bold mb-0 text-white">${os.desc}</h5>
+                    <div class="os-box shadow-lg position-relative overflow-hidden p-4 rounded-4" style="background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="fw-bold mb-0 text-white">${os.desc}</h4>
                         </div>
-                        <span class="badge bg-warning text-dark mb-2 border border-warning">${os.status.toUpperCase()}</span>
-                        <p class="text-info fw-bold mb-1"><i class="bi bi-scooter me-1"></i> ${mot?mot.placa:'-'} (${mot?mot.modelo:'-'})</p>
-                        <p class="text-white-50 small mb-0"><i class="bi bi-calendar-check me-1"></i> Data de Ingresso: ${new Date(os.data).toLocaleDateString('pt-PT')}</p>
-                        <p class="text-success fw-bold fs-4 mt-3 mb-0 border-top border-secondary pt-2">Custo Atual: R$ ${os.total.toFixed(2)}</p>
+                        <span class="badge bg-warning text-dark mb-3 border border-warning px-3 py-2 fs-6 shadow-sm"><i class="bi bi-gear-fill me-1"></i> FASE ATUAL: ${os.status.toUpperCase()}</span>
+                        <p class="text-info fw-bold mb-2 fs-5"><i class="bi bi-scooter me-2 text-white-50"></i> Veículo: ${mot?mot.placa:'Sem Cadastro'}</p>
+                        <p class="text-white-50 small mb-0 mt-2 pb-3 border-bottom border-secondary"><i class="bi bi-calendar-event me-2"></i> Deixou a mota connosco a: ${new Date(os.data).toLocaleDateString('pt-PT')}</p>
+                        <h3 class="text-success fw-bold mt-4 mb-0">Total Provisório: R$ ${os.total.toFixed(2)}</h3>
                         ${btn}
                     </div>`;
                 }).join('');
@@ -226,14 +234,14 @@
             const cardAlerta = document.getElementById('kpiAlerta');
             if(temAtraso) {
                 cardAlerta.classList.remove('border-success'); cardAlerta.classList.add('border-danger');
-                document.getElementById('kpiStatus').className = "fw-bold mb-1 text-danger";
-                document.getElementById('kpiStatus').innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> Manutenção Vencida';
-                document.getElementById('kpiSubStatus').innerText = "Há mais de 6 meses que não faz a revisão recomendada.";
+                document.getElementById('kpiStatus').className = "fw-bold mb-2 text-danger fs-3";
+                document.getElementById('kpiStatus').innerHTML = '<i class="bi bi-exclamation-triangle-fill me-2"></i> Risco Elevado';
+                document.getElementById('kpiSubStatus').innerText = "A sua mota necessita da revisão semestral obrigatória.";
             } else {
                 cardAlerta.classList.remove('border-danger'); cardAlerta.classList.add('border-success');
-                document.getElementById('kpiStatus').className = "fw-bold mb-1 text-success";
-                document.getElementById('kpiStatus').innerHTML = '<i class="bi bi-shield-check"></i> Seguro e em Dia';
-                document.getElementById('kpiSubStatus').innerText = "O seu veículo cumpre as normas de segurança.";
+                document.getElementById('kpiStatus').className = "fw-bold mb-2 text-success fs-3";
+                document.getElementById('kpiStatus').innerHTML = '<i class="bi bi-shield-check me-2"></i> Viatura Confiável';
+                document.getElementById('kpiSubStatus').innerText = "As manutenções encontram-se rigorosamente em dia.";
             }
         }
 
@@ -242,44 +250,60 @@
             if(!os || !os.check) return;
             const chk = os.check;
             
-            // Render KPI Pneus (SaaS Feature)
             const getKpiHtml = (val, title) => {
                 let cor = 'success'; if(val < 50) cor = 'warning'; if(val < 20) cor = 'danger';
-                return `<div class="mb-3"><div class="d-flex justify-content-between small fw-bold text-white-50"><span>${title}</span><span>${val}%</span></div><div class="progress bg-black border border-secondary" style="height:10px;"><div class="progress-bar bg-${cor}" style="width: ${val}%"></div></div></div>`;
+                return `<div class="mb-3"><div class="d-flex justify-content-between small fw-bold text-white-50 mb-1"><span>${title} (Desgaste/Vida)</span><span class="text-${cor}">${val}%</span></div><div class="progress bg-black border border-secondary" style="height:12px;"><div class="progress-bar bg-${cor}" style="width: ${val}%"></div></div></div>`;
             };
 
-            const checkIcon = (val) => val ? '<i class="bi bi-check-circle-fill text-success fs-5"></i>' : '<i class="bi bi-x-circle-fill text-danger fs-5"></i>';
+            const checkIcon = (val) => val ? '<i class="bi bi-check-circle-fill text-success fs-4"></i>' : '<i class="bi bi-x-circle-fill text-danger fs-4"></i>';
             
             let mediaHtml = '';
             if(os.media && os.media.length > 0) {
-                mediaHtml = `<h6 class="text-info fw-bold mt-4 mb-2"><i class="bi bi-camera me-1"></i> Galeria de Provas Oficinais</h6><div class="media-grid">` + os.media.map(m => {
-                    return m.type === 'video' ? `<video src="${m.url}" controls></video>` : `<img src="${m.url}" onclick="window.open('${m.url}','_blank')">`;
+                mediaHtml = `<h5 class="text-info fw-bold mt-5 mb-3 border-bottom border-secondary pb-2"><i class="bi bi-cloud-arrow-down-fill me-2"></i> Galeria e Provas (Em Direto da Bancada)</h5><div class="media-grid">` + os.media.map(m => {
+                    return m.type === 'video' ? `<video src="${m.url}" controls class="shadow-sm"></video>` : `<img src="${m.url}" onclick="window.open('${m.url}','_blank')" title="Ampliar a Foto" class="shadow-sm">`;
                 }).join('') + `</div>`;
+            } else {
+                mediaHtml = `<h5 class="text-info fw-bold mt-5 mb-3 border-bottom border-secondary pb-2"><i class="bi bi-camera-video-off me-2"></i> Provas Visuais</h5><p class="text-white-50 fst-italic">O Mecânico não tirou nenhuma foto da sua mota até ao momento.</p>`;
             }
 
             document.getElementById('corpoLaudo').innerHTML = `
-                <div class="p-3 bg-black rounded-4 border border-secondary mb-4 shadow-sm"><p class="mb-0 fw-bold"><i class="bi bi-fuel-pump text-info me-2"></i> Depósito: <span class="text-white-50">${chk.comb}</span></p></div>
+                <div class="p-4 bg-black rounded-4 border border-secondary mb-4 shadow-sm d-flex align-items-center">
+                    <i class="bi bi-fuel-pump display-5 text-info me-3 opacity-75"></i>
+                    <div>
+                        <span class="text-white-50 small text-uppercase fw-bold">Combustível Reportado na Entrada</span>
+                        <h4 class="mb-0 fw-bold text-white">${chk.comb}</h4>
+                    </div>
+                </div>
                 
-                <h6 class="text-warning fw-bold mb-3"><i class="bi bi-speedometer2 me-1"></i> Desgaste de Borracha (Pneus)</h6>
-                <div class="p-3 bg-black rounded-4 border border-secondary mb-4 shadow-sm">
-                    ${getKpiHtml(chk.pneuDia || 0, 'Pneu Dianteiro')}
-                    ${getKpiHtml(chk.pneuTra || 0, 'Pneu Traseiro')}
+                <h5 class="text-warning fw-bold mb-3"><i class="bi bi-speedometer2 me-2"></i> Relatório Telemétrico (Borracha)</h5>
+                <div class="p-4 bg-black rounded-4 border border-secondary mb-4 shadow-sm">
+                    ${getKpiHtml(chk.pneuDia || 0, 'Pneumático Frente')}
+                    ${getKpiHtml(chk.pneuTra || 0, 'Pneumático Retaguarda')}
+                    <small class="text-white-50 d-block mt-3 fst-italic"><i class="bi bi-exclamation-circle me-1"></i> Abaixo de 20% é considerado perigo crítico para condução com chuva.</small>
                 </div>
 
-                <h6 class="text-warning fw-bold mb-3"><i class="bi bi-list-check me-1"></i> Auditoria Base</h6>
-                <div class="p-3 bg-black rounded-4 border border-secondary mb-4 shadow-sm">
-                    <div class="d-flex align-items-center mb-3 border-bottom border-secondary pb-2">${checkIcon(chk.painel)} <span class="ms-2 fw-bold text-white-50">Eletrónica / Painel</span></div>
-                    <div class="d-flex align-items-center mb-3 border-bottom border-secondary pb-2">${checkIcon(chk.pneus)} <span class="ms-2 fw-bold text-white-50">Pressão Pneus</span></div>
-                    <div class="d-flex align-items-center mb-2">${checkIcon(chk.care)} <span class="ms-2 fw-bold text-white-50">Carenagens OK</span></div>
+                <h5 class="text-warning fw-bold mb-3 mt-4"><i class="bi bi-ui-checks-grid me-2"></i> Condições Estruturais Básicas</h5>
+                <div class="p-4 bg-black rounded-4 border border-secondary mb-4 shadow-sm">
+                    <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-secondary pb-3">
+                        <span class="fw-bold text-white-50 fs-5">Módulo Elétrico</span>${checkIcon(chk.painel)}
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-secondary pb-3">
+                        <span class="fw-bold text-white-50 fs-5">Pressão do Ar Constatada</span>${checkIcon(chk.pneus)}
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span class="fw-bold text-white-50 fs-5">Físico e Carenagens</span>${checkIcon(chk.care)}
+                    </div>
                 </div>
 
-                <div class="p-3 bg-black rounded-4 border border-danger mb-2 shadow-sm">
-                    <p class="text-danger fw-bold mb-2"><i class="bi bi-shield-exclamation me-1"></i> Declaração de Danos Prévios:</p>
-                    <p class="text-white-50 fst-italic mb-0 small">"${chk.obs || 'Veículo imaculado. Nenhuma avaria prévia apontada pelo técnico.'}"</p>
+                <div class="p-4 bg-black rounded-4 border border-danger mb-2 shadow-sm position-relative overflow-hidden">
+                    <div class="position-absolute top-0 end-0 p-2 opacity-25"><i class="bi bi-shield-exclamation display-2 text-danger"></i></div>
+                    <p class="text-danger fw-bold mb-2 fs-5 position-relative z-1"><i class="bi bi-exclamation-triangle-fill me-2"></i> Termo de Danos de Entrada:</p>
+                    <p class="text-white fst-italic mb-0 fs-5 position-relative z-1 lh-sm">"${chk.obs || 'Veículo entregue sem nenhuma avaria estética assinalada pelo técnico.'}"</p>
                 </div>
                 ${mediaHtml}
             `;
-            new bootstrap.Modal(document.getElementById('modalChecklistCliente')).show();
+            const mod = bootstrap.Modal.getInstance(document.getElementById('modalChecklistCliente')) || new bootstrap.Modal(document.getElementById('modalChecklistCliente'));
+            mod.show();
         };
 
         window.enviarMensagem = async function() {
