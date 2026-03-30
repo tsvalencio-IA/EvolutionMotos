@@ -18,7 +18,7 @@
         .btn-primary:hover { background-color: #c94400; }
         .kpi-card { padding: 20px; border-radius: 12px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3);}
         .os-box { background-color: #1e293b; padding: 20px; border-radius: 12px; border-left: 5px solid var(--bs-accent); margin-bottom: 20px; border-top: 1px solid #334155; border-right: 1px solid #334155; border-bottom: 1px solid #334155;}
-        .chat-app { background-color: #1e293b; border-radius: 12px; border: 1px solid #334155; overflow: hidden; height: 600px; display: flex; flex-direction: column; }
+        .chat-app { background-color: #1e293b; border-radius: 12px; border: 1px solid #334155; overflow: hidden; height: 500px; display: flex; flex-direction: column; }
         .chat-view { flex-grow: 1; padding: 15px; overflow-y: auto; background-color: #0f172a; }
         .msg { max-width: 85%; padding: 12px; border-radius: 12px; margin-bottom: 10px; font-size: 0.95rem; }
         .msg.cliente { background-color: var(--bs-accent); align-self: flex-end; margin-left: auto; border-bottom-right-radius: 0; }
@@ -82,10 +82,19 @@
             <div class="row g-4">
                 <div class="col-lg-6">
                     <h4 class="mb-3 border-bottom border-secondary pb-2 text-white"><i class="bi bi-tools text-warning me-2"></i> Intervenções na Oficina</h4>
-                    <div id="boxServicos" class="mb-5"></div>
+                    <div id="boxServicos" class="mb-4"></div>
 
                     <h4 class="mb-3 border-bottom border-secondary pb-2 text-white"><i class="bi bi-scooter text-info me-2"></i> Ficha da Viatura</h4>
-                    <div class="row g-3" id="boxMotos"></div>
+                    <div class="row g-3 mb-4" id="boxMotos"></div>
+                    
+                    <h4 class="mb-3 border-bottom border-secondary pb-2 text-white"><i class="bi bi-calendar2-check text-success me-2"></i> Planejamento e Financeiro</h4>
+                    <div class="card p-4 bg-dark border-secondary mb-4 shadow-sm">
+                        <h6 class="text-warning fw-bold mb-3"><i class="bi bi-receipt me-1"></i> Minhas Faturas / Boletos Pendentes</h6>
+                        <div id="boxFinanceiro" class="text-white-50 small mb-4">A carregar dados financeiros...</div>
+                        
+                        <h6 class="text-info fw-bold mt-2 mb-3"><i class="bi bi-tools me-1"></i> Planejamento de Revisões</h6>
+                        <div id="boxPlanejamento" class="text-white-50 small">A carregar plano de manutenções preventivas...</div>
+                    </div>
                 </div>
 
                 <div class="col-lg-6">
@@ -122,7 +131,7 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         
         let idMeuCliente = null; let meuTenant = null; let nomeCliente = null;
-        let minhasMotos = []; let meusServicos = [];
+        let minhasMotos = []; let meusServicos = []; let meuFinanceiro = [];
 
         async function entrar(e) {
             e.preventDefault();
@@ -132,7 +141,6 @@
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> A LER A BASE DE DADOS...'; btn.disabled = true;
 
             try {
-                // Segurança Anti-Índice
                 const snapshot = await db.collection('clientes').where('email', '==', em).get();
                 if (snapshot.empty) {
                     alert("Ops! O E-mail não foi localizado. Fale com a oficina.");
@@ -146,7 +154,7 @@
                         btn.innerHTML = '<i class="bi bi-unlock-fill me-2"></i> ACESSAR GARAGEM'; btn.disabled = false;
                     } else {
                         idMeuCliente = doc.id;
-                        meuTenant = dados.tenantId; // Rota do Chat 
+                        meuTenant = dados.tenantId; // Fundamental para o Chat comunicar na rota correta
                         nomeCliente = dados.nome;
                         
                         document.getElementById('loginScreen').style.display = 'none';
@@ -162,6 +170,7 @@
         function iniciarAppEmTempoReal() {
             db.collection('motos').where('clienteId', '==', idMeuCliente).onSnapshot(snap => { minhasMotos = snap.docs.map(d=>({id: d.id, ...d.data()})); renderizarPainel(); });
             db.collection('servicos').where('clienteId', '==', idMeuCliente).onSnapshot(snap => { meusServicos = snap.docs.map(d=>({id: d.id, ...d.data()})); renderizarPainel(); });
+            db.collection('financeiroItems').where('clienteId', '==', idMeuCliente).onSnapshot(snap => { meuFinanceiro = snap.docs.map(d=>({id: d.id, ...d.data()})); renderizarPainel(); });
             
             // CHAT CRM BLINDADO NA ROTA DO CLIENTE E INQUILINO (TENANT)
             db.collection('mensagens').where('clienteId', '==', idMeuCliente).onSnapshot(snap => {
@@ -185,10 +194,10 @@
         window.aprovarOrcamento = async function(idOs, total, desc) {
             if(confirm("Deseja APROVAR a execução deste Orçamento? O seu mecânico será notificado na hora e dará início ao trabalho.")) {
                 await db.collection('servicos').doc(idOs).update({status: 'Aprovado'});
-                // Injeta mensagem no chat
+                // Injeta mensagem no chat para alertar o admin
                 await db.collection('mensagens').add({
                     tenantId: meuTenant, clienteId: idMeuCliente, sender: 'cliente',
-                    text: `✅ ORÇAMENTO APROVADO: O cliente ${nomeCliente} aprovou a intervenção referente a "${desc}" no valor de R$ ${parseFloat(total).toFixed(2)}. Pode avançar para o Elevador!`,
+                    text: `✅ ORÇAMENTO APROVADO: Aprovei a intervenção referente a "${desc}" no valor de R$ ${parseFloat(total).toFixed(2)}. Podem avançar para o Elevador!`,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 alert("Sucesso! Orçamento aprovado e oficina notificada.");
@@ -198,7 +207,7 @@
         window.negociarPagamento = async function(desc) {
             await db.collection('mensagens').add({
                 tenantId: meuTenant, clienteId: idMeuCliente, sender: 'cliente',
-                text: `⚠️ NEGOCIAÇÃO: Olá! Recebi o orçamento da OS ("${desc}"). Gostaria de saber quais as condições de pagamento e parcelamento disponíveis. Podemos conversar?`,
+                text: `⚠️ NEGOCIAÇÃO: Olá! Vi o orçamento da OS ("${desc}"). Gostaria de saber quais as condições de pagamento e parcelamento disponíveis. Podemos conversar?`,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
             alert("A oficina foi notificada do seu interesse em negociar. Acompanhe a resposta pelo Chat ao lado!");
@@ -257,6 +266,36 @@
 
             const gastoHistorico = meusServicos.filter(s=>s.status==='Concluido').reduce((acc, os) => acc + os.total, 0);
             document.getElementById('kpiGastoTotal').innerText = `R$ ${gastoHistorico.toFixed(2)}`;
+
+            // RENDER FINANCEIRO CLIENTE
+            const boxFin = document.getElementById('boxFinanceiro');
+            if(boxFin) {
+                if(meuFinanceiro.length === 0) {
+                    boxFin.innerHTML = '<p class="mb-0 text-success"><i class="bi bi-check-circle-fill me-1"></i> Nenhuma pendência financeira encontrada.</p>';
+                } else {
+                    boxFin.innerHTML = meuFinanceiro.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(f => {
+                        const cor = f.status === 'Pendente' ? 'text-danger' : 'text-success';
+                        const icone = f.status === 'Pendente' ? 'bi-hourglass-split' : 'bi-check-all';
+                        return `<div class="d-flex justify-content-between align-items-center border-bottom border-secondary py-3">
+                            <div><strong class="d-block text-white mb-1">${f.descricao}</strong><small class="text-white-50">Vencimento: ${new Date(f.data).toLocaleDateString('pt-PT')}</small></div>
+                            <div class="text-end"><h5 class="${cor} fw-bold mb-1">R$ ${f.valor.toFixed(2)}</h5><span class="badge bg-black border border-secondary ${cor}"><i class="bi ${icone}"></i> ${f.status}</span></div>
+                        </div>`;
+                    }).join('');
+                }
+            }
+
+            // RENDER PLANEJAMENTO AUTOMÁTICO (SUGESTÃO DE MANUTENÇÃO POR KM)
+            const boxPlan = document.getElementById('boxPlanejamento');
+            if(boxPlan) {
+                boxPlan.innerHTML = minhasMotos.map(m => {
+                    const proxKm = (parseInt(m.km) || 0) + 3000;
+                    return `<div class="p-3 bg-black rounded-4 border border-secondary mb-3 shadow-inner">
+                        <strong class="text-info d-block fs-5 mb-1"><i class="bi bi-scooter me-1"></i> ${m.modelo} (${m.placa})</strong>
+                        Próxima Revisão Recomendada: <span class="text-warning fw-bold">${proxKm} KM</span><br>
+                        <small class="text-white-50 mt-2 d-block border-top border-secondary pt-2">Manutenção Preventiva Padrão (Troca de óleo, filtros e reaperto).</small>
+                    </div>`;
+                }).join('') || '<p class="text-white-50">Cadastre uma moto na oficina para ver seu planejamento automático.</p>';
+            }
 
             let temAtraso = false;
             meusServicos.filter(s=>s.status==='Concluido').forEach(os => {
