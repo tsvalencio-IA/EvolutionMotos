@@ -99,7 +99,7 @@
                     <div class="col-md-3"><div class="kpi-box shadow-sm border-success"><i class="bi bi-currency-dollar text-success"></i><p class="text-white-50 fw-bold mb-0 small">Faturamento (Mês)</p><h2 class="kpi-value text-success !important" id="kpiFaturacao">R$ 0.00</h2></div></div>
                     <div class="col-md-3"><div class="kpi-box shadow-sm border-info"><i class="bi bi-tools text-info"></i><p class="text-white-50 fw-bold mb-0 small">Veículos no Pátio</p><h2 class="kpi-value text-info !important" id="kpiOsPendentes">0</h2></div></div>
                     <div class="col-md-3"><div class="kpi-box shadow-sm border-warning"><i class="bi bi-exclamation-triangle text-warning"></i><p class="text-white-50 fw-bold mb-0 small">Alerta Estoque Baixo</p><h2 class="kpi-value text-warning !important" id="kpiStockCritico">0</h2></div></div>
-                    <div class="col-md-3"><div class="kpi-box shadow-sm border-danger"><i class="bi bi-receipt text-danger"></i><p class="text-white-50 fw-bold mb-0 small">Boletos/Inadimplência</p><h2 class="kpi-value text-danger !important" id="kpiBoletos">0</h2></div></div>
+                    <div class="col-md-3"><div class="kpi-box shadow-sm border-danger"><i class="bi bi-receipt text-danger"></i><p class="text-white-50 fw-bold mb-0 small">Boletos Pendentes</p><h2 class="kpi-value text-danger !important" id="kpiBoletos">0</h2></div></div>
                 </div>
                 <div class="row g-4">
                     <div class="col-12">
@@ -168,7 +168,7 @@
                 </div>
             </section>
 
-            <!-- FINANCEIRO (CORREÇÃO DE CORES DA TABELA PARA DARK) -->
+            <!-- FINANCEIRO -->
             <section id="financeiro" class="admin-section mod-fin" style="display:none;">
                 <div class="card border-0 shadow">
                     <div class="card-header d-flex justify-content-between align-items-center py-4 bg-dark"><h4 class="mb-0 text-success"><i class="bi bi-bank me-2"></i> Gestão de Caixa e Boletos</h4><button class="btn btn-success fw-bold px-4 text-dark" data-bs-toggle="modal" data-bs-target="#modalFinanceiro"><i class="bi bi-cash me-2"></i> Movimento Avulso</button></div>
@@ -207,13 +207,13 @@
                             </div>
                             <div class="card-body p-0 d-flex flex-column">
                                 <div class="p-3 bg-black border-bottom border-secondary d-flex align-items-center justify-content-between">
-                                    <span class="text-white-50 small"><i class="bi bi-key-fill me-1"></i> Para ativar a IA, forneça a sua chave Gemini API:</span>
-                                    <input type="password" id="geminiApiKey" class="form-control bg-dark text-warning border-secondary w-50" placeholder="Cole sua API Key aqui (AIzaSy...)">
+                                    <span class="text-white-50 small"><i class="bi bi-info-circle me-1"></i> (Opcional) A thIAguinho Soluções insere a API no SuperAdmin. Se quiser testar direto aqui, cole sua Gemini API:</span>
+                                    <input type="password" id="geminiApiKey" class="form-control bg-dark text-warning border-secondary w-50" placeholder="AIzaSy...">
                                 </div>
                                 <div id="iaChatBox" class="p-4 overflow-auto" style="height: 500px; background-color: #1a1d20;">
                                     <div class="d-flex justify-content-start mb-3">
                                         <div class="p-3 rounded-4 shadow-lg text-dark bg-warning" style="max-width: 80%;">
-                                            <strong>thIAguinho:</strong> Olá! Sou treinado para pensar como Gestor e Mecânico. Pergunte-me sobre códigos OBD2 de motos, peças, ou estratégias de vendas e fidelização de clientes. Estou pronto!
+                                            <strong>thIAguinho:</strong> Olá! Sou treinado para pensar como Gestor e Mecânico. Pergunte-me sobre códigos OBD2 de motos, peças, ou estratégias de fidelização de clientes. Estou pronto!
                                         </div>
                                     </div>
                                 </div>
@@ -233,9 +233,7 @@
         </footer>
     </div>
 
-    <!-- ========================================================================================= -->
-    <!-- MODAL GIGANTE DA O.S. (BLINDADO E COM CADASTRO DE MOTO INTERNO)                           -->
-    <!-- ========================================================================================= -->
+    <!-- MODAL GIGANTE DA O.S. (BLINDADO E COM CADASTRO DE MOTO INTERNO) -->
     <div class="modal fade" id="modalOS" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl">
             <div class="modal-content shadow-lg border-warning" style="border-width: 2px;">
@@ -288,7 +286,7 @@
                                 </div>
 
                                 <div class="mb-5 p-3 rounded-4 bg-black border border-secondary">
-                                    <label class="form-label text-white fw-bold"><i class="bi bi-journal-text text-info me-1"></i> Notas Internas / Auditoria</label>
+                                    <label class="form-label text-white fw-bold"><i class="bi bi-journal-text text-info me-1"></i> Notas Internas / Auditoria (Opcional)</label>
                                     <textarea class="form-control bg-dark border-secondary" id="osNotasAuditoria" rows="2" placeholder="Ex: Cliente solicitou urgência. Aprovado via WhatsApp por esposa."></textarea>
                                 </div>
 
@@ -309,7 +307,7 @@
                                     </div>
                                 </div>
 
-                                <!-- PAGAMENTO DINÂMICO E PARCELADO MOD FINANCEIRO -->
+                                <!-- PAGAMENTO DINÂMICO MOD FINANCEIRO -->
                                 <div id="areaPagamentoOS" class="mt-4 p-4 rounded-4 d-none shadow-lg mod-fin-block" style="background-color: rgba(13, 202, 240, 0.1); border: 2px dashed #0dcaf0;">
                                     <h4 class="text-info fw-bold mb-3"><i class="bi bi-wallet-fill me-2"></i> Forma de Recebimento Acertada</h4>
                                     <p class="text-white-50 mb-4 small">Guardar a OS como "Concluído" debitará as peças do estoque físico. <br>Se selecionar um método <b>Parcelado ou Boleto</b>, o sistema vai gerar Múltiplas Parcelas e Títulos Pendentes no Caixa para você dar baixa depois.</p>
@@ -324,7 +322,7 @@
                                                 <option value="Cartão de Crédito - Parcelado">Cartão de Crédito Parcelado (Gera Títulos)</option>
                                                 <option value="Transferência Bancária">Transferência TED/DOC (Pago)</option>
                                                 <option value="Boleto - À Vista">Boleto à Vista (Pendente)</option>
-                                                <option value="Boleto - Parcelado">Boleto Parcelado (Pendente)</option>
+                                                <option value="Boleto - Parcelado">Boleto Parcelado (Múltiplos Pendentes)</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6" id="osDivParcelas" style="display:none;">
@@ -409,18 +407,13 @@
 
     <!-- MODAIS DE COMPRAS E CADASTROS BASE -->
     <div class="modal fade" id="modalCompra" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content shadow-lg border-primary"><div class="modal-header py-3 bg-dark border-bottom border-primary"><h5 class="modal-title text-white"><i class="bi bi-box-arrow-in-down me-2 text-primary"></i> Documento de Compra de Peças (NF)</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 bg-dark"><form id="formCompra" onsubmit="salvarCompra(event)"><div class="row g-4 mb-4"><div class="col-md-6"><label class="form-label text-white-50">Fornecedor</label><select class="form-select bg-black border-secondary" id="compraForn" required></select></div><div class="col-md-6"><label class="form-label text-info">Nº da NF Original</label><input type="text" class="form-control fw-bold border-info text-info bg-black" id="compraNF" required></div></div><div class="mb-4 p-3 rounded bg-black border border-secondary"><label class="form-label text-white fw-bold">Auditoria / Observação Interna</label><textarea class="form-control bg-dark border-secondary" id="compraAuditoria" rows="2" placeholder="Ex: Fatura referente a encomenda urgente para a OS 293"></textarea></div><div class="mb-5 p-4 rounded-4 border border-secondary" style="background-color: #1e2124;"><h6 class="text-white fw-bold mb-3 border-bottom border-secondary pb-3"><i class="bi bi-boxes me-2 text-primary"></i> Itens da NF (Entrarão Automático no Estoque)</h6><div id="containerPecasCompra" class="d-flex flex-column gap-3 mb-4"></div><button type="button" class="btn btn-outline-primary fw-bold rounded-pill px-4" onclick="adicionarPecaCompra()">+ Inserir Artigo na NF</button></div><div class="row g-4 mb-4 p-4 rounded-4 mod-fin-block" style="background-color: rgba(220, 53, 69, 0.05); border: 1px solid #dc3545; display:none;"><div class="col-md-6"><label class="form-label fw-bold text-danger">Liquidação da Compra</label><select class="form-select fw-bold border-danger text-danger bg-black" id="compraPgtoForma" onchange="verificarPgtoCompra()"><option value="Dinheiro">Dinheiro Físico</option><option value="Pix">PIX Imediato</option><option value="Cartão de Crédito - À Vista">Cartão Crédito à Vista</option><option value="Cartão de Crédito - Parcelado">Cartão de Crédito Parcelado (Gera Títulos)</option><option value="Boleto - À Vista">Boleto à Vista (Pendente)</option><option value="Boleto - Parcelado">Boleto Parcelado (Múltiplos Pendentes)</option></select></div><div class="col-md-6" id="compraDivParcelas" style="display:none;"><label class="form-label fw-bold text-danger">Parcelas / Vencimentos</label><select class="form-select bg-black border-danger text-danger" id="compraParcelas"><option value="2x">2x Parcelas</option><option value="3x">3x Parcelas</option><option value="4x">4x Parcelas</option><option value="6x">6x Parcelas</option><option value="12x">12x Parcelas</option><option value="30/60 Dias">30/60 Dias (2x)</option><option value="30/60/90 Dias">30/60/90 Dias (3x)</option></select></div><div class="col-12 mt-4 text-end"><span class="text-white-50 fw-bold d-block mb-2">Total a Pagar na NF:</span><h2 class="text-danger fw-bold mb-0 display-6">R$ <span id="compraTotalVisual">0.00</span></h2><input type="hidden" id="compraTotalFinal" value="0"></div></div><button type="submit" class="btn btn-danger w-100 py-3 fs-5 fw-bold shadow-lg" id="btnSalvarCompra">FINALIZAR COMPRA E ESTOQUE</button></form></div></div></div></div>
-    
     <div class="modal fade" id="modalPeca" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Ficha de Artigo (Estoque)</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formPeca" onsubmit="salvarPeca(event)"><input type="hidden" id="pecaId"><div class="mb-3"><label class="form-label text-white-50">Designação (Nome da Peça)</label><input type="text" class="form-control form-control-lg text-warning fw-bold bg-black" id="pecaNome" required></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Custo de Compra (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black" id="pecaCusto" required></div><div class="col-6"><label class="form-label text-success fw-bold">PVP Sugerido Venda (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black text-success fw-bold border-success" id="pecaVenda" required></div></div><div class="mb-4"><label class="form-label text-white-50">Quantidade no Estoque</label><input type="number" class="form-control form-control-lg bg-black text-center fw-bold" id="pecaQtd" required></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">CRIAR REFERÊNCIA</button></form></div></div></div></div>
     <div class="modal fade" id="modalAjusteStock" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="stockAdjTitle">Ajuste Manual de Estoque</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formAjuste" onsubmit="ajustarEstoque(event)"><input type="hidden" id="adjType"><div class="mb-3"><label class="form-label text-white-50">Selecione o Artigo</label><select class="form-select form-select-lg bg-black" id="adjItem" required></select></div><div class="mb-3"><label class="form-label text-white-50">Diferença de Quantidade</label><input type="number" class="form-control form-control-lg bg-black text-center fs-3 fw-bold" id="adjQtd" required min="1"></div><div class="mb-4"><label class="form-label text-white-50">Motivo / Notas de Auditoria</label><input type="text" class="form-control bg-black" id="adjNota" required placeholder="Ex: Peça danificada, quebra na oficina"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">EXECUTAR AJUSTE</button></form></div></div></div></div>
-    
     <div class="modal fade" id="modalCliente" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Ficha de Cliente B2C</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formCliente" onsubmit="salvarCliente(event)"><input type="hidden" id="clienteId"><div class="mb-3"><label class="form-label text-white-50">Nome do Proprietário</label><input type="text" class="form-control form-control-lg bg-black" id="clienteNome" required></div><div class="mb-4"><label class="form-label text-white-50">Telefone / WhatsApp (Apenas Números)</label><input type="number" class="form-control form-control-lg bg-black" id="clienteContato" required></div><hr class="border-secondary mb-4"><h6 class="text-warning mb-3 fw-bold"><i class="bi bi-phone"></i> Portal Online do Cliente</h6><div class="mb-3"><label class="form-label text-white-50">E-mail de Login do Cliente</label><input type="email" class="form-control bg-black" id="clienteEmail" required></div><div class="mb-4"><label class="form-label text-white-50">PIN Gerado</label><div class="input-group"><input type="text" class="form-control bg-black text-warning fw-bold border-warning" id="clienteSenha" required><button class="btn btn-warning fw-bold text-dark px-4" type="button" onclick="document.getElementById('clienteSenha').value=Math.random().toString(36).slice(-6)">Gerar Novo PIN</button></div></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">SALVAR CLIENTE</button></form></div></div></div></div>
     <div class="modal fade" id="modalMoto" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Registo de Veículo</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formMoto" onsubmit="salvarMoto(event)"><input type="hidden" id="motoId"><div class="mb-3"><label class="form-label text-white-50">Dono da Viatura (Cliente)</label><select class="form-select form-select-lg bg-black" id="motoDono" required></select></div><div class="mb-3"><label class="form-label text-white-50">Marca e Modelo</label><input type="text" class="form-control form-control-lg bg-black" id="motoModelo" required placeholder="Ex: Honda CG 160"></div><div class="mb-3"><label class="form-label text-white-50">Placa da Moto</label><input type="text" class="form-control form-control-lg bg-black text-uppercase fw-bold text-warning border-warning text-center" id="motoPlaca" required></div><div class="mb-4"><label class="form-label text-white-50">Quilometragem (KM)</label><input type="number" class="form-control form-control-lg bg-black" id="motoKm"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">CADASTRAR VEÍCULO</button></form></div></div></div></div>
-    
     <div class="modal fade" id="modalFuncionario" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Equipe Mecânica</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFunc(event)"><div class="mb-3"><label class="form-label text-white-50">Nome do Colaborador</label><input type="text" class="form-control form-control-lg bg-black" id="funcNome" required></div><div class="mb-4"><label class="form-label text-white-50">Cargo Especialidade</label><input type="text" class="form-control form-control-lg bg-black" id="funcCargo" placeholder="Mecânico Chefe"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">ADMITIR COLABORADOR</button></form></div></div></div></div>
     <div class="modal fade" id="modalFornecedor" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Cadastro Fornecedor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFornecedor(event)"><div class="mb-3"><label class="form-label text-white-50">Razão Social</label><input type="text" class="form-control form-control-lg bg-black" id="fornNome" required></div><div class="mb-4"><label class="form-label text-white-50">O que ele fornece?</label><input type="text" class="form-control form-control-lg bg-black" id="fornCat" placeholder="Ex: Peças Originais Honda"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">SALVAR FORNECEDOR</button></form></div></div></div></div>
-    
-    <div class="modal fade" id="modalFinanceiro" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Lançamento de Caixa Avulso</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFinManual(event)"><div class="mb-3"><label class="form-label text-white-50">Operação</label><select class="form-select form-select-lg bg-black fw-bold border-secondary" id="finTipo"><option class="text-success" value="Entrada">Registar Receita</option><option class="text-danger" value="Saída">Declarar Despesa</option></select></div><div class="mb-3"><label class="form-label text-white-50">Justificativo Legal (O que é?)</label><input type="text" class="form-control form-control-lg bg-black" id="finDesc" required placeholder="Conta de Internet, Aluguel..."></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Valor Apurado (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black fw-bold border-secondary" id="finValor" required></div><div class="col-6"><label class="form-label text-white-50">Data</label><input type="date" class="form-control form-control-lg bg-black border-secondary" id="finData" required></div></div><div class="row g-3 mb-4"><div class="col-md-6"><label class="form-label text-white-50">Forma Pagto</label><select class="form-select border-warning fw-bold bg-black text-white" id="finPgto"><option>Dinheiro</option><option>Pix</option><option>Cartão Crédito</option><option>Cartão Débito</option><option>Boleto / A Prazo</option><option>Transferência</option></select></div><div class="col-md-6"><label class="form-label text-white-50">Estado de Liquidação</label><select class="form-select border-warning text-warning fw-bold bg-black" id="finStatus"><option value="Pago">Liquidado na Hora (Pago)</option><option value="Pendente">Em Dívida / A Receber (Pendente)</option></select></div></div><button type="submit" class="btn btn-success w-100 py-3 fw-bold fs-5 text-dark">INJETAR NO CAIXA</button></form></div></div></div></div>
-    
+    <div class="modal fade" id="modalFinanceiro" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Lançamento de Caixa Avulso</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFinManual(event)"><div class="mb-3"><label class="form-label text-white-50">Operação</label><select class="form-select form-select-lg bg-black fw-bold border-secondary" id="finTipo"><option class="text-success" value="Entrada">Registar Receita</option><option class="text-danger" value="Saída">Declarar Despesa</option></select></div><div class="mb-3"><label class="form-label text-white-50">Justificativo Legal (O que é?)</label><input type="text" class="form-control form-control-lg bg-black" id="finDesc" required placeholder="Conta de Internet, Aluguel..."></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Valor Apurado (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black fw-bold border-secondary" id="finValor" required></div><div class="col-6"><label class="form-label text-white-50">Data</label><input type="date" class="form-control form-control-lg bg-black border-secondary" id="finData" required></div></div><div class="mb-3"><label class="form-label text-white-50">Notas / Auditoria Interna</label><textarea class="form-control bg-black border-secondary text-white" id="finNota" rows="2" placeholder="Detalhes da nota fiscal, quem autorizou..."></textarea></div><div class="row g-3 mb-4"><div class="col-md-6"><label class="form-label text-white-50">Forma Pagto</label><select class="form-select border-warning fw-bold bg-black text-white" id="finPgto"><option>Dinheiro</option><option>Pix</option><option>Cartão Crédito</option><option>Cartão Débito</option><option>Boleto / A Prazo</option><option>Transferência</option></select></div><div class="col-md-6"><label class="form-label text-white-50">Estado de Liquidação</label><select class="form-select border-warning text-warning fw-bold bg-black" id="finStatus"><option value="Pago">Liquidado na Hora (Pago)</option><option value="Pendente">Em Dívida / A Receber (Pendente)</option></select></div></div><button type="submit" class="btn btn-success w-100 py-3 fw-bold fs-5 text-dark">INJETAR NO CAIXA</button></form></div></div></div></div>
     <div class="modal fade" id="modalAgenda" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-primary"><div class="modal-header bg-dark border-bottom border-primary"><h5 class="modal-title text-primary"><i class="bi bi-calendar-plus"></i> Agendar Revisão / Serviço</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarAgendamento(event)"><input type="hidden" id="agdId"><div class="mb-3"><label class="form-label text-white-50">Cliente Associado</label><select class="form-select bg-black text-white" id="agdCliente" required onchange="filtrarMotosAgenda()"></select></div><div class="mb-3"><label class="form-label text-white-50">Viatura Alvo</label><select class="form-select bg-black text-white" id="agdMoto"></select></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Data Pretendida</label><input type="date" class="form-control bg-black text-white" id="agdData" required></div><div class="col-6"><label class="form-label text-white-50">Hora</label><input type="time" class="form-control bg-black text-white" id="agdHora" required></div></div><div class="mb-4"><label class="form-label text-white-50">Motivo / Operação Prevista</label><textarea class="form-control bg-black text-white" id="agdMotivo" rows="2" placeholder="Revisão dos 10mil, Troca óleo..." required></textarea></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-5">BLOQUEAR HORÁRIO DA AGENDA</button></form></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -441,6 +434,7 @@
         // REDIRECIONAMENTO SAAS E INÍCIO
         let tenantId = sessionStorage.getItem('evo_tenant_id');
         let modulosAtivos = JSON.parse(sessionStorage.getItem('evo_tenant_mods') || '{}');
+        let minhaGeminiKey = null;
 
         if (!tenantId) {
             if (window.location.protocol !== 'blob:') { window.location.replace('index.html'); }
@@ -470,6 +464,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             if(!tenantId) return; 
             
+            // Busca a chave Gemini salva no Super Admin para este inquilino
+            db.collection('oficinas').doc(tenantId).onSnapshot(doc => {
+                if(doc.exists && doc.data().geminiKey) { minhaGeminiKey = doc.data().geminiKey; if($('geminiApiKey')) $('geminiApiKey').value = minhaGeminiKey; }
+            });
+
             db.collection('estoqueItems').where('tenantId', '==', tenantId).onSnapshot(s => { dbEstoque = s.docs.map(d=>({id:d.id,...d.data()})); renderEstoque(); calcularEstatisticasTotais(); });
             db.collection('clientes').where('tenantId', '==', tenantId).onSnapshot(s => { dbClientes = s.docs.map(d=>({id:d.id,...d.data()})); renderClientes(); renderAgendamentos(); calcularEstatisticasTotais(); });
             db.collection('motos').where('tenantId', '==', tenantId).onSnapshot(s => { dbMotos = s.docs.map(d=>({id:d.id,...d.data()})); renderMotos(); renderAgendamentos(); });
@@ -640,7 +639,7 @@
             e.preventDefault(); 
             const btnSub = document.getElementById('btnSalvarCompra');
             const txtOrig = btnSub.innerHTML;
-            btnSub.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> PROCESSANDO AUDITORIA...';
+            btnSub.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> PROCESSANDO AUDITORIA E ESTOQUE...';
             btnSub.disabled = true;
 
             try {
@@ -675,7 +674,7 @@
                     }
 
                     const valorParcela = total / numParcelas;
-                    const stsPgto = (fp.includes('Boleto') || fp.includes('Pendente')) ? 'Pendente' : 'Pago'; 
+                    const stsPgto = (fp.includes('Boleto') || fp.includes('Pendente') || fp.includes('Parcelado')) ? 'Pendente' : 'Pago'; 
                     
                     for(let i=0; i<numParcelas; i++) {
                         let dataVenc = new Date(dt);
@@ -705,7 +704,7 @@
         }
 
         // =========================================================================
-        // O CORAÇÃO: O.S. KANBAN E ENCERRAMENTO COM BOLETOS
+        // O CORAÇÃO: O.S. KANBAN E ENCERRAMENTO COM BOLETOS E AUDITORIA
         // =========================================================================
         function renderKanban() {
             const cols = { 'Aguardando':[], 'Orcamento':[], 'Aprovado':[], 'Andamento':[], 'Concluido':[] };
@@ -793,13 +792,23 @@
             btnSub.disabled = true;
 
             try {
-                const id=$v('osId'); const sts=$v('osStatus'); const tot=parseFloat($v('osTotalHidden')); const arrP=[]; document.querySelectorAll('.item-os-peca').forEach(el=>{ const ids=el.querySelector('.os-peca-sel').value; if(ids) arrP.push({id:ids, qtd:parseInt(el.querySelector('.os-peca-qtd').value)}); });
+                const id=$v('osId'); const sts=$v('osStatus'); const tot=parseFloat($v('osTotalHidden')); const arrP=[]; 
+                document.querySelectorAll('.item-os-peca').forEach(el=>{ 
+                    const sel = el.querySelector('.os-peca-sel');
+                    const ids = sel.value; 
+                    const nomePeca = sel.options[sel.selectedIndex].text.split(' - ')[0]; // Pega nome da peça
+                    if(ids) arrP.push({id:ids, nome: nomePeca, qtd:parseInt(el.querySelector('.os-peca-qtd').value)}); 
+                });
+                
                 const mediaArr = JSON.parse($v('osMediaArray') || '[]');
                 const notasAud = $v('osNotasAuditoria') || ''; // Notas do gerente
                 const userLogin = sessionStorage.getItem('evo_tenant_nome') || 'Desconhecido';
+                const fp = $v('osPgtoForma'); 
+                const parcelasText = $v('osPgtoParcelas');
 
                 const d = { 
                     tenantId, clienteId:$v('osCliente'), motoId:$v('osMoto'), desc:$v('osDescricao'), status:sts, mecId:$v('osMec'), data:$v('osData'), maoObra:parseFloat($v('osMaoObra')), total:tot, pecas:arrP, media: mediaArr, notasAuditoria: notasAud,
+                    pagamento: { forma: fp, parcelas: parcelasText },
                     check: { comb:$v('chkComb'), painel:$('chkPainel')?$('chkPainel').checked:false, pneus:$('chkPneusOk')?$('chkPneusOk').checked:false, care:$('chkCare')?$('chkCare').checked:false, obs:$v('chkObs'), pneuDia: parseInt($v('chkPneuDia'))||0, pneuTra: parseInt($v('chkPneuTra'))||0 } 
                 };
 
@@ -808,18 +817,19 @@
                     const isNova = (!id || dbServicos.find(x=>x.id===id)?.status !== 'Concluido');
                     if (isNova) {
                         let err = false; 
-                        for(let p of arrP) { const es = dbEstoque.find(x=>x.id===p.id); if(!es || es.qtd < p.qtd) err=true; }
-                        if(err) throw new Error("Ação Recusada: Stock de peças insuficiente para abater. Ajuste a prateleira primeiro.");
+                        let pecasFaltantes = [];
+                        for(let p of arrP) { const es = dbEstoque.find(x=>x.id===p.id); if(!es || es.qtd < p.qtd) { err=true; pecasFaltantes.push(p.nome); } }
+                        if(err) throw new Error("Ação Recusada: Stock insuficiente para a(s) peça(s): " + pecasFaltantes.join(', '));
                         
+                        let logPecas = [];
                         // For...of para garantir que aguarda a baixa de tudo
                         for(let p of arrP) { 
                             const es=dbEstoque.find(x=>x.id===p.id); 
                             await db.collection('estoqueItems').doc(p.id).update({qtd: es.qtd-p.qtd}); 
+                            logPecas.push(`${p.qtd}x ${p.nome}`);
                         }
                         
                         if(modulosAtivos.financeiro) {
-                            const fp = $v('osPgtoForma'); 
-                            const parcelasText = $v('osPgtoParcelas');
                             let moText = ""; if ($('osMoto') && $('osMoto').selectedIndex >= 0) moText = $('osMoto').options[$('osMoto').selectedIndex].text;
                             
                             // GERADOR DE MÚLTIPLOS BOLETOS E PARCELAS (O SEGREDO SÊNIOR)
@@ -835,8 +845,8 @@
                             }
 
                             const valorParcela = tot / numParcelas;
-                            const stsPgto = (fp.includes('Boleto') || fp.includes('Pendente')) ? 'Pendente' : 'Pago';
-                            const txtAuditoria = `Fechado por: ${userLogin} | Obs: ${notasAud}`;
+                            const stsPgto = (fp.includes('Boleto') || fp.includes('Pendente') || fp.includes('Parcelado') || fp.includes('Crédito')) ? 'Pendente' : 'Pago';
+                            const txtAuditoria = `OS Fechada por: ${userLogin} | Peças: ${logPecas.join(', ')} | Obs: ${notasAud}`;
 
                             // Gera as N parcelas com vencimentos de 30 em 30 dias
                             for(let i=0; i<numParcelas; i++) {
@@ -845,10 +855,10 @@
                                     dataVenc.setDate(dataVenc.getDate() + ((i+1)*30));
                                 }
                                 const dataIso = dataVenc.toISOString().split('T')[0];
-                                const descFin = numParcelas > 1 ? `Fatura Serviço: ${moText} (Parc ${i+1}/${numParcelas})` : `Fatura Serviço Prestado: ${moText}`;
+                                const descFin = numParcelas > 1 ? `Fatura OS: ${moText} (Parc ${i+1}/${numParcelas})` : `Fatura OS Prestado: ${moText}`;
 
                                 await db.collection('financeiroItems').add({
-                                    tenantId, tipo:'Entrada', descricao: descFin, valor: valorParcela, 
+                                    tenantId, clienteId: $v('osCliente'), tipo:'Entrada', descricao: descFin, valor: valorParcela, 
                                     data: dataIso, originType:'Receita O.S.', pagto: fp, status: stsPgto, 
                                     originId: id||'nova', auditoriaNota: txtAuditoria
                                 });
@@ -861,7 +871,9 @@
                 if(id) await db.collection('servicos').doc(id).update(d); 
                 else await db.collection('servicos').add(d); 
                 
-                const mod = bootstrap.Modal.getInstance($('modalOS')); if(mod) mod.hide();
+                const elModalOS = document.getElementById('modalOS');
+                const mod = bootstrap.Modal.getInstance(elModalOS);
+                if (mod) mod.hide();
             } catch(err) { 
                 showToast(err.message, "error"); 
             } finally {
@@ -870,7 +882,7 @@
         }
 
         // =========================================================================
-        // FINANCEIRO (FIM DO FUNDO BRANCO - TABELA ESCURA TOTAL)
+        // FINANCEIRO (FIM DO FUNDO BRANCO - TABELA ESCURA TOTAL COM NOTAS)
         // =========================================================================
         function renderCaixa() {
             let e=0, s=0; const tab = $('tabelaCaixa'); if(!tab) return;
@@ -892,11 +904,11 @@
             if($('caixaSaldo')) { $('caixaSaldo').innerText=`R$ ${(e-s).toFixed(2)}`; if(e-s<0) $('caixaSaldo').classList.add('text-danger'); else $('caixaSaldo').classList.remove('text-danger'); }
         }
         
-        async function salvarFinManual(ev) { ev.preventDefault(); try { await db.collection('financeiroItems').add({tenantId, tipo:$v('finTipo'), descricao:$v('finDesc'), valor:parseFloat($v('finValor')), data:$v('finData'), pagto:$v('finPgto'), status:$v('finStatus'), auditoriaNota: `Movimento Manual por ${sessionStorage.getItem('evo_tenant_nome')}`}); const mod = bootstrap.Modal.getInstance($('modalFinanceiro')); if(mod) mod.hide(); showToast("Caixa injetado com sucesso.", "success"); } catch(err) { showToast(err.message, "error"); } }
+        async function salvarFinManual(ev) { ev.preventDefault(); try { await db.collection('financeiroItems').add({tenantId, tipo:$v('finTipo'), descricao:$v('finDesc'), valor:parseFloat($v('finValor')), data:$v('finData'), pagto:$v('finPgto'), status:$v('finStatus'), auditoriaNota: ($v('finNota') || '') + ` | Mov. Manual por ${sessionStorage.getItem('evo_tenant_nome')}`}); const elFin = document.getElementById('modalFinanceiro'); const mod = bootstrap.Modal.getInstance(elFin); if(mod) mod.hide(); showToast("Caixa injetado com sucesso.", "success"); } catch(err) { showToast(err.message, "error"); } }
         async function darBaixaFin(id) { if(confirm("O valor será creditado/debitado do Saldo Real de Tesouraria. Confirma a Liquidação da Parcela?")) { await db.collection('financeiroItems').doc(id).update({status: 'Pago'}); showToast("Parcela descontada e compensada com sucesso!", "success"); } }
 
         // =========================================================================
-        // CHAT CRM BLINDADO (A ROTA CORRETA DO TENANT)
+        // CHAT CRM BLINDADO (A ROTA CORRETA DO TENANT) E GEMINI IA
         // =========================================================================
         let chatActiveClienteId = null;
         function abrirChat(id, nm) {
@@ -922,13 +934,10 @@
             if($('inputChatAdmin')) $('inputChatAdmin').value=''; 
         }
 
-        // =========================================================================
-        // INTELIGÊNCIA ARTIFICIAL (THIAGUINHO COM GEMINI)
-        // =========================================================================
         async function perguntarIA() {
-            const key = $v('geminiApiKey').trim();
+            const key = $v('geminiApiKey').trim() || minhaGeminiKey;
             const prompt = $v('iaInputMsg').trim();
-            if(!key) return showToast("É necessário inserir a sua chave API do Google Gemini.", "error");
+            if(!key) return showToast("A thIAguinho Soluções ainda não ativou a chave. Preencha temporariamente acima.", "error");
             if(!prompt) return;
 
             const chatBox = $('iaChatBox');
@@ -941,29 +950,24 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                const sysPrompt = "Você é o thIAguinho, um consultor sênior hiper-inteligente de oficinas mecânicas e de motos do sistema Evolution SaaS. Você entende profundamente de mecânica de motores, gestão financeira de oficinas, atendimento ao cliente B2C e leitura de códigos OBD2. Responda de forma altamente profissional, técnica, direta e proativa em português.";
-                
+                const sysPrompt = "Você é o thIAguinho, um consultor sênior hiper-inteligente de oficinas. Responda de forma altamente profissional e técnica em português.";
                 const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: sysPrompt }] } };
-
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
                 });
 
                 const data = await res.json();
                 if($(loaderId)) $(loaderId).remove();
-
                 if(data.error) throw new Error(data.error.message);
 
                 const resposta = data.candidates[0].content.parts[0].text;
                 chatBox.innerHTML += `<div class="d-flex justify-content-start mb-3"><div class="p-3 bg-warning text-dark rounded-4 w-75 shadow" style="white-space: pre-wrap;"><strong>thIAguinho:</strong><br>${resposta}</div></div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
-
             } catch(err) {
                 if($(loaderId)) $(loaderId).remove();
                 showToast("Falha Cognitiva na IA: " + err.message, "error");
             }
         }
-
     </script>
 </body>
 </html>
