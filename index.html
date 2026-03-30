@@ -28,14 +28,14 @@
         
         <form onsubmit="fazerLogin(event)">
             <div class="mb-3 text-start">
-                <label class="form-label text-white-50 fw-bold small text-uppercase">Utilizador da Oficina</label>
+                <label class="form-label text-white-50 fw-bold small text-uppercase">Usuário da Oficina</label>
                 <div class="input-group">
                     <span class="input-group-text bg-dark border-secondary text-white-50"><i class="bi bi-person"></i></span>
                     <input type="text" class="form-control" id="usr" required placeholder="Digite o seu utilizador">
                 </div>
             </div>
             <div class="mb-4 text-start">
-                <label class="form-label text-white-50 fw-bold small text-uppercase">Palavra-passe</label>
+                <label class="form-label text-white-50 fw-bold small text-uppercase">Senha de Acesso</label>
                 <div class="input-group">
                     <span class="input-group-text bg-dark border-secondary text-white-50"><i class="bi bi-key"></i></span>
                     <input type="password" class="form-control" id="pwd" required placeholder="••••••••">
@@ -77,16 +77,22 @@
             btn.disabled = true;
 
             try {
-                const snapshot = await db.collection('oficinas').where('usuario', '==', usr).where('senha', '==', pwd).get();
+                // Correção Sênior: Busca apenas pelo usuário para evitar erro de Index no Firebase
+                const snapshot = await db.collection('oficinas').where('usuario', '==', usr).get();
+                
                 if(snapshot.empty) {
-                    showToast('Credenciais inválidas ou não localizadas na plataforma.');
+                    showToast('Usuário não localizado na plataforma.');
                 } else {
                     const doc = snapshot.docs[0];
                     const dados = doc.data();
                     
-                    if(dados.status === 'Bloqueado') {
+                    // Valida a senha no lado do cliente
+                    if(dados.senha !== pwd) {
+                        showToast('Senha incorreta.');
+                    } else if(dados.status === 'Bloqueado') {
                         showToast('Licença Bloqueada. Contacte a thIAguinho Soluções.');
                     } else {
+                        // Autorizado!
                         sessionStorage.setItem('evo_tenant_id', doc.id);
                         sessionStorage.setItem('evo_tenant_nome', dados.nomeFantasia);
                         sessionStorage.setItem('evo_tenant_mods', JSON.stringify(dados.modulos || {}));
@@ -95,7 +101,7 @@
                 }
             } catch (err) {
                 console.error(err);
-                showToast('Erro de conexão com a Nuvem. Verifique a sua internet.');
+                showToast('Erro Crítico: ' + err.message);
             }
             btn.innerHTML = 'ENTRAR NO SISTEMA';
             btn.disabled = false;
