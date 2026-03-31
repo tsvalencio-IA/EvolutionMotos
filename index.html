@@ -31,7 +31,7 @@
                 <label class="form-label text-white-50 fw-bold small text-uppercase">Usuário da Oficina</label>
                 <div class="input-group">
                     <span class="input-group-text bg-dark border-secondary text-white-50"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control" id="usr" required placeholder="Digite seu usuário">
+                    <input type="text" class="form-control" id="usr" required placeholder="Digite o seu utilizador">
                 </div>
             </div>
             <div class="mb-4 text-start">
@@ -49,16 +49,8 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAq6gEJlUGuzJmrNf-lVY0cqdOWsJ9xNeo",
-            authDomain: "evolution-179d0.firebaseapp.com",
-            projectId: "evolution-179d0",
-            storageBucket: "evolution-179d0.firebasestorage.app",
-            messagingSenderId: "349908951188",
-            appId: "1:349908951188:web:457832d484a83f45b19481"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const firebaseConfig = { apiKey: "AIzaSyAq6gEJlUGuzJmrNf-lVY0cqdOWsJ9xNeo", authDomain: "evolution-179d0.firebaseapp.com", projectId: "evolution-179d0", storageBucket: "evolution-179d0.firebasestorage.app", messagingSenderId: "349908951188", appId: "1:349908951188:web:457832d484a83f45b19481" };
+        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
         function showToast(msg, type='error') {
             const bg = type==='error'?'bg-danger':'bg-success';
@@ -78,30 +70,22 @@
 
             try {
                 const snapshot = await db.collection('oficinas').where('usuario', '==', usr).get();
-                
-                if(snapshot.empty) {
-                    showToast('Usuário não localizado na plataforma.');
-                } else {
+                if(snapshot.empty) { showToast('Usuário não localizado na plataforma.'); } 
+                else {
                     const doc = snapshot.docs[0];
                     const dados = doc.data();
                     
-                    if(dados.senha !== pwd) {
-                        showToast('Senha incorreta.');
-                    } else if(dados.status === 'Bloqueado') {
-                        showToast('Licença Bloqueada. Contacte a thIAguinho Soluções.');
-                    } else {
+                    if(dados.senha !== pwd) { showToast('Senha incorreta.'); } 
+                    else if(dados.status === 'Bloqueado') { showToast('Licença Bloqueada. Contacte a thIAguinho Soluções.'); } 
+                    else {
                         sessionStorage.setItem('evo_tenant_id', doc.id);
                         sessionStorage.setItem('evo_tenant_nome', dados.nomeFantasia);
                         sessionStorage.setItem('evo_tenant_mods', JSON.stringify(dados.modulos || {}));
                         window.location.href = 'admin.html';
                     }
                 }
-            } catch (err) {
-                console.error(err);
-                showToast('Erro Crítico: ' + err.message);
-            }
-            btn.innerHTML = 'ENTRAR NO SISTEMA';
-            btn.disabled = false;
+            } catch (err) { showToast('Erro Crítico: ' + err.message); }
+            btn.innerHTML = 'ENTRAR NO SISTEMA'; btn.disabled = false;
         }
     </script>
 </body>
