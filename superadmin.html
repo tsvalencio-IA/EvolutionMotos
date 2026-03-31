@@ -60,19 +60,13 @@
                         <div class="col-md-4"><div class="card p-4 text-center border-0 shadow-sm"><h6 class="text-white-50 text-uppercase fw-bold">Licenças Ativas</h6><h1 class="display-4 fw-bold text-success" id="kpiAtivos">0</h1></div></div>
                         <div class="col-md-4"><div class="card p-4 text-center border-0 shadow-sm"><h6 class="text-white-50 text-uppercase fw-bold">Licenças Bloqueadas</h6><h1 class="display-4 fw-bold text-danger" id="kpiBloqueados">0</h1></div></div>
                     </div>
-
                     <div class="card shadow-lg border-0">
                         <div class="card-header d-flex justify-content-between align-items-center py-3">
-                            <h5 class="mb-0"><i class="bi bi-buildings-fill me-2"></i> Gestão de Inquilinos (Oficinas)</h5>
+                            <h5 class="mb-0">Gestão de Licenças</h5>
                             <button class="btn btn-info fw-bold text-dark px-4 shadow" onclick="abrirModalOficina('add')"><i class="bi bi-plus-lg me-1"></i> Cadastrar Oficina</button>
                         </div>
                         <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0 align-middle">
-                                    <thead><tr><th>ID Firebase</th><th>Nome da Oficina</th><th>Contato Responsável</th><th>Acesso (Usuário/Senha)</th><th>Módulos Premium</th><th>Status Financeiro</th><th>Ação</th></tr></thead>
-                                    <tbody id="tabelaOficinas"></tbody>
-                                </table>
-                            </div>
+                            <div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead><tr><th>ID Firebase</th><th>Nome da Oficina</th><th>Contato Responsável</th><th>Acesso (Usuário/Senha)</th><th>Módulos Premium</th><th>Status Financeiro</th><th>Ação</th></tr></thead><tbody id="tabelaOficinas"></tbody></table></div>
                         </div>
                     </div>
                 </div>
@@ -97,7 +91,7 @@
         </div>
     </div>
 
-    <!-- MODAL CADASTRO OFICINA -->
+    <!-- MODAL OFICINA -->
     <div class="modal fade" id="modalOficina" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -105,7 +99,6 @@
                 <div class="modal-body p-4 bg-dark">
                     <form id="formOficina" onsubmit="salvarOficina(event)">
                         <input type="hidden" id="oficinaId">
-                        
                         <h6 class="text-white fw-bold mb-3 border-bottom border-secondary pb-2"><i class="bi bi-building me-2"></i>Dados do Inquilino</h6>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6"><label class="form-label text-white-50">Nome Fantasia</label><input type="text" class="form-control" id="ofcNome" required></div>
@@ -123,17 +116,16 @@
                         <h6 class="text-white fw-bold mb-3 border-bottom border-secondary pb-2"><i class="bi bi-robot me-2"></i>Configuração de I.A. (thIAguinho)</h6>
                         <div class="row g-3 mb-4">
                             <div class="col-12">
-                                <label class="form-label text-white-50">Chave API do Google Gemini (Exclusiva desta Oficina)</label>
+                                <label class="form-label text-white-50">Chave API do Google Gemini</label>
                                 <input type="password" class="form-control text-warning fw-bold" id="geminiApiKey" placeholder="Cole a chave AIzaSy... aqui">
-                                <small class="text-white-50">Isto habilita a IA apenas para este Inquilino. Evita alucinações e isola os custos da API.</small>
                             </div>
                         </div>
 
                         <h6 class="text-white fw-bold mb-3 border-bottom border-secondary pb-2"><i class="bi bi-star me-2"></i>Liberação de Módulos (Upsell)</h6>
                         <div class="row g-3 mb-4 p-4 bg-black rounded border border-secondary shadow-sm">
-                            <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="modFinanceiro"><label class="form-check-label text-white ms-2">Financeiro & Boletos</label></div></div>
-                            <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="modChat"><label class="form-check-label text-white ms-2">Chat CRM Online</label></div></div>
-                            <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="modIa"><label class="form-check-label text-warning fw-bold ms-2">Assistente IA V21</label></div></div>
+                            <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="modFinanceiro"><label class="form-check-label text-white ms-2">Financeiro</label></div></div>
+                            <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="modChat"><label class="form-check-label text-white ms-2">Chat CRM</label></div></div>
+                            <div class="col-md-4"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" id="modIa"><label class="form-check-label text-warning fw-bold ms-2">Assistente IA</label></div></div>
                         </div>
                         <button type="submit" class="btn btn-info w-100 py-3 fw-bold text-dark fs-5 shadow" id="btnSalvarOfc"><i class="bi bi-cloud-arrow-up-fill me-2"></i> SALVAR LICENÇA NO SERVIDOR</button>
                     </form>
@@ -222,7 +214,6 @@
             btn.disabled = false; btn.innerHTML = originalText;
         }
 
-        // FINANCEIRO MASTER SAAS
         function renderSaasFin() {
             let e = 0, s = 0;
             document.getElementById('tabelaSaasFin').innerHTML = dbSaasFin.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(f => {
