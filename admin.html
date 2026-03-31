@@ -84,7 +84,7 @@
                 <a class="navbar-brand fs-4" href="#"><i class="bi bi-hexagon-fill me-2"></i><span id="navTenantName">Evolution</span></a>
                 <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1 gap-md-2 ms-xl-4 mt-3 mt-xl-0">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1 gap-md-2 ms-xl-4 mt-3 mt-xl-0 flex-wrap">
                         <li class="nav-item"><a class="nav-link active" onclick="mudarAba('dashboard')"><i class="bi bi-grid-1x2-fill me-1"></i> Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link" onclick="mudarAba('agendamentos')"><i class="bi bi-calendar-event me-1"></i> Agenda</a></li>
                         <li class="nav-item"><a class="nav-link" onclick="mudarAba('os')"><i class="bi bi-kanban me-1"></i> Pátio O.S.</a></li>
@@ -92,6 +92,8 @@
                         <li class="nav-item"><a class="nav-link" onclick="mudarAba('clientesMotos')"><i class="bi bi-people-fill me-1"></i> Clientes</a></li>
                         <li class="nav-item"><a class="nav-link" onclick="mudarAba('compras')"><i class="bi bi-receipt me-1"></i> Compras/NF</a></li>
                         <li class="nav-item mod-fin" style="display:none;"><a class="nav-link text-success fw-bold" onclick="mudarAba('financeiro')"><i class="bi bi-bank me-1"></i> Financeiro</a></li>
+                        <li class="nav-item"><a class="nav-link" onclick="mudarAba('funcionarios')"><i class="bi bi-person-badge me-1"></i> Equipe</a></li>
+                        <li class="nav-item"><a class="nav-link text-secondary fw-bold" onclick="mudarAba('auditoria')"><i class="bi bi-shield-check me-1"></i> Auditoria</a></li>
                         <li class="nav-item mod-chat" style="display:none;"><a class="nav-link text-info fw-bold" onclick="mudarAba('mensagens')"><i class="bi bi-chat-left-dots-fill me-1"></i> CRM Chat <span id="chatBadgeGlobal" class="badge bg-danger badge-nav d-none">0</span></a></li>
                         <li class="nav-item mod-ia" style="display:none;"><a class="nav-link text-warning fw-bold" onclick="mudarAba('ia_assistant')"><i class="bi bi-robot me-1"></i> thIAguinho</a></li>
                     </ul>
@@ -112,7 +114,7 @@
                     <div class="col-6 col-md-3"><div class="kpi-box shadow-sm border-success p-3 p-md-4"><i class="bi bi-currency-dollar text-success"></i><p class="text-white-50 fw-bold mb-0 small text-truncate">Faturamento (Mês)</p><h2 class="kpi-value text-success !important fs-3 fs-md-1" id="kpiFaturacao">R$ 0.00</h2></div></div>
                     <div class="col-6 col-md-3"><div class="kpi-box shadow-sm border-info p-3 p-md-4"><i class="bi bi-tools text-info"></i><p class="text-white-50 fw-bold mb-0 small text-truncate">Veículos no Pátio</p><h2 class="kpi-value text-info !important fs-3 fs-md-1" id="kpiOsPendentes">0</h2></div></div>
                     <div class="col-6 col-md-3"><div class="kpi-box shadow-sm border-warning p-3 p-md-4"><i class="bi bi-exclamation-triangle text-warning"></i><p class="text-white-50 fw-bold mb-0 small text-truncate">Alerta Estoque</p><h2 class="kpi-value text-warning !important fs-3 fs-md-1" id="kpiStockCritico">0</h2></div></div>
-                    <div class="col-6 col-md-3"><div class="kpi-box shadow-sm border-danger p-3 p-md-4"><i class="bi bi-receipt text-danger"></i><p class="text-white-50 fw-bold mb-0 small text-truncate">Boletos Pendentes</p><h2 class="kpi-value text-danger !important fs-3 fs-md-1" id="kpiBoletos">0</h2></div></div>
+                    <div class="col-6 col-md-3"><div class="kpi-box shadow-sm border-danger p-3 p-md-4"><i class="bi bi-receipt text-danger"></i><p class="text-white-50 fw-bold mb-0 small text-truncate">Boletos/Inadimp.</p><h2 class="kpi-value text-danger !important fs-3 fs-md-1" id="kpiBoletos">0</h2></div></div>
                 </div>
                 <div class="row g-4">
                     <div class="col-12">
@@ -139,17 +141,15 @@
             <section id="os" class="admin-section" style="display:none;">
                 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
                     <h3 class="fw-bold mb-0"><i class="bi bi-kanban text-accent me-2"></i> Quadro de O.S.</h3>
-                    
                     <div class="d-flex flex-column flex-md-row gap-3 w-100" style="max-width: 700px;">
                         <div class="input-group shadow-sm">
                             <span class="input-group-text bg-dark border-secondary text-white-50"><i class="bi bi-search"></i></span>
                             <input type="text" id="searchOS" class="form-control" placeholder="Buscar Placa ou Cliente..." onkeyup="renderKanban()">
                         </div>
-                        <button class="btn btn-outline-success fw-bold text-nowrap shadow-sm border-2" onclick="exportarCSV('os')"><i class="bi bi-file-earmark-excel"></i> Exportar (CSV)</button>
-                        <button class="btn btn-primary fw-bold px-4 shadow text-nowrap" data-bs-toggle="modal" data-bs-target="#modalOS" onclick="prepararModalOS('add')"><i class="bi bi-plus-lg me-2"></i> NOVA O.S.</button>
+                        <button class="btn btn-outline-success fw-bold text-nowrap shadow-sm border-2" onclick="exportarCSV('os')"><i class="bi bi-file-earmark-excel"></i> Exportar CSV</button>
+                        <button class="btn btn-primary fw-bold px-4 shadow text-nowrap" data-bs-toggle="modal" data-bs-target="#modalOS" onclick="prepararModalOS('add')"><i class="bi bi-plus-lg me-2"></i> INGRESSAR VEÍCULO</button>
                     </div>
                 </div>
-
                 <div class="kanban-board" id="quadroKanban">
                     <div class="kanban-col"><div class="kanban-col-header kanban-col-Aguardando"><span>Triagem/Avaliação</span> <span class="badge bg-secondary" id="count-Aguardando">0</span></div><div id="kb-Aguardando" class="kanban-cards-container d-flex flex-column gap-2"></div></div>
                     <div class="kanban-col"><div class="kanban-col-header kanban-col-Orcamento"><span>Orçamentado</span> <span class="badge bg-secondary" id="count-Orcamento">0</span></div><div id="kb-Orcamento" class="kanban-cards-container d-flex flex-column gap-2"></div></div>
@@ -190,7 +190,15 @@
                 </div>
             </section>
 
-            <!-- FINANCEIRO (PREMIUM) -->
+            <!-- FUNCIONARIOS & COMISSÕES -->
+            <section id="funcionarios" class="admin-section" style="display:none;">
+                <div class="row g-4">
+                    <div class="col-xl-7"><div class="card border-0 h-100"><div class="card-header d-flex justify-content-between align-items-center py-3 bg-dark"><h5 class="mb-0"><i class="bi bi-person-badge me-2"></i> Equipe Técnica e Gerentes</h5><button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalFuncionario">Contratar Funcionário</button></div><div class="card-body"><div class="table-responsive"><table class="table table-hover align-middle text-white"><thead><tr><th>Nome</th><th>Cargo</th><th>Comissão (%)</th><th>Ações</th></tr></thead><tbody id="tabelaFuncionarios"></tbody></table></div></div></div></div>
+                    <div class="col-xl-5"><div class="card border-0 h-100"><div class="card-header py-3 bg-dark"><h5 class="mb-0"><i class="bi bi-wallet2 text-success me-2"></i> Comissões a Pagar (O.S. Concluídas)</h5></div><div class="card-body p-4 bg-black"><p class="text-white-50 small mb-4">Calculado com base no valor da "Mão de Obra" das O.S. fechadas.</p><div id="boxComissoes" class="d-flex flex-column gap-3"></div></div></div></div>
+                </div>
+            </section>
+
+            <!-- FINANCEIRO PREMIUM -->
             <section id="financeiro" class="admin-section mod-fin" style="display:none;">
                 <div class="card border-0 shadow">
                     <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-sm-center py-4 bg-dark gap-3">
@@ -217,12 +225,22 @@
                 </div>
             </section>
 
+            <!-- AUDITORIA GLOBAL -->
+            <section id="auditoria" class="admin-section" style="display:none;">
+                <div class="card border-0 shadow">
+                    <div class="card-header py-4 bg-dark border-bottom border-secondary"><h4 class="mb-0 text-secondary"><i class="bi bi-shield-lock-fill me-2"></i> Auditoria de Sistema e Prevenção de Fraudes</h4></div>
+                    <div class="card-body p-0 bg-black">
+                        <div class="p-4 text-white-50 small border-bottom border-secondary">Todos os ajustes de estoque manuais e edições/remoções de valores financeiros são registrados aqui de forma irreversível.</div>
+                        <div class="table-responsive"><table class="table align-middle text-white mb-0"><thead><tr><th>Data da Ação</th><th>Descrição do Log de Auditoria</th></tr></thead><tbody id="tabelaAuditoria"></tbody></table></div>
+                    </div>
+                </div>
+            </section>
+
             <!-- CHAT CRM -->
             <section id="mensagens" class="admin-section mod-chat" style="display:none;">
                 <div class="row h-100 g-4">
                     <div class="col-lg-4"><div class="card h-100 border-0 shadow"><div class="card-header py-3 bg-dark border-info border-bottom"><h5 class="mb-0 text-info"><i class="bi bi-headset me-2"></i> Central CRM</h5></div><div class="list-group list-group-flush bg-transparent" id="chatListaClientes" style="overflow-y: auto; height: 600px;"></div></div></div>
                     <div class="col-lg-8"><div class="card h-100 border-0 shadow"><div class="card-header py-3 bg-dark"><h5 id="chatNomeCliente" class="text-warning mb-0">Selecione um cliente na lista.</h5></div><div class="card-body p-0 d-flex flex-column bg-black"><div class="chat-container border-0 w-100 bg-transparent h-100"><div class="chat-messages" id="chatAreaMsg"><div class="text-center text-white-50 mt-5 pt-5 h-100 d-flex flex-column justify-content-center align-items-center"><i class="bi bi-chat-left-dots display-1 mb-4 opacity-50"></i><p>As mensagens chegam na App do Cliente em tempo real via Nuvem.</p></div></div><div class="chat-input p-3" id="chatAreaInput" style="display:none; background-color: #1e2124;">
-                        <!-- NOVO BOTÃO DE ANEXO DE CHAT -->
                         <button class="btn btn-outline-secondary rounded-circle me-2" style="width: 45px; height: 45px; flex-shrink:0;" onclick="$('chatFileInput').click()"><i class="bi bi-paperclip fs-5"></i></button>
                         <input type="file" id="chatFileInput" accept="image/*,video/*,audio/*" style="display:none;" onchange="enviarAnexoChat()">
                         <input type="text" class="form-control form-control-lg rounded-pill px-4 border-info text-white" id="inputChatAdmin" placeholder="Responder ao cliente...">
@@ -231,7 +249,7 @@
                 </div>
             </section>
 
-            <!-- IA ASSISTANT (THIAGUINHO COM RAG - VERDADE ABSOLUTA) -->
+            <!-- IA ASSISTANT RAG -->
             <section id="ia_assistant" class="admin-section mod-ia" style="display:none;">
                 <div class="row h-100">
                     <div class="col-12">
@@ -266,7 +284,9 @@
         </footer>
     </div>
 
-    <!-- MODAL GIGANTE DA O.S. -->
+    <!-- ========================================================================================= -->
+    <!-- MODAL GIGANTE DA O.S. (NOVO CLIENTE, NOVA MOTO, PROGRAMAÇÃO DE REVISÃO E PDF)             -->
+    <!-- ========================================================================================= -->
     <div class="modal fade" id="modalOS" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content shadow-lg border-warning" style="border-width: 2px;">
@@ -323,7 +343,7 @@
                                             <option value="Cancelado">Cancelado</option>
                                         </select>
                                     </div>
-                                    <div class="col-12 col-md-4"><label class="form-label text-white-50 text-uppercase small fw-bold">Mecânico Responsável</label><select class="form-select form-select-lg bg-black" id="osMec"><option value="">Nenhum Alocado</option></select></div>
+                                    <div class="col-12 col-md-4"><label class="form-label text-white-50 text-uppercase small fw-bold">Mecânico Responsável (Comissão)</label><select class="form-select form-select-lg bg-black" id="osMec"><option value="">Nenhum Alocado</option></select></div>
                                     <div class="col-12 col-md-4"><label class="form-label text-white-50 text-uppercase small fw-bold">Data Abertura</label><input type="date" class="form-control form-control-lg bg-black" id="osData" required></div>
                                 </div>
 
@@ -366,6 +386,28 @@
                                     </div>
 
                                     <div class="col-12">
+                                        <div class="p-3 p-md-4 rounded-4 bg-black border border-secondary shadow-inner">
+                                            <h5 class="text-warning mb-3 fw-bold"><i class="bi bi-speedometer me-2"></i> Medição de KPIs de Desgaste (Para o App do Cliente)</h5>
+                                            <div class="row g-3 g-md-4">
+                                                <div class="col-12 col-md-6">
+                                                    <label class="form-label fw-bold text-warning">Desgaste: Pneu Dianteiro (%)</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control form-control-lg border-warning bg-dark fw-bold text-center text-white" id="chkPneuDia" placeholder="100=Novo, 0=Careca" min="0" max="100">
+                                                        <span class="input-group-text bg-warning text-dark fw-bold">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label class="form-label fw-bold text-warning">Desgaste: Pneu Traseiro (%)</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control form-control-lg border-warning bg-dark fw-bold text-center text-white" id="chkPneuTra" placeholder="100=Novo, 0=Careca" min="0" max="100">
+                                                        <span class="input-group-text bg-warning text-dark fw-bold">%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
                                         <div class="p-3 p-md-4 rounded-4 bg-black border border-secondary">
                                             <label class="form-label fw-bold text-white-50 mb-3 d-block">Testes de Segurança e Avarias</label>
                                             <div class="row g-3 g-md-4 mb-4 border-bottom border-secondary pb-4">
@@ -386,8 +428,8 @@
                                     </div>
                                 </div>
 
-                                <!-- PAGAMENTO DINÂMICO E REVISÃO AUTOMÁTICA -->
-                                <div id="areaPagamentoOS" class="p-3 p-md-4 rounded-4 d-none shadow-lg mod-fin-block" style="background-color: rgba(13, 202, 240, 0.1); border: 2px dashed #0dcaf0; flex-direction: column;">
+                                <!-- PAGAMENTO E REVISÃO -->
+                                <div id="areaPagamentoOS" class="mt-4 p-3 p-md-4 rounded-4 d-none shadow-lg mod-fin-block" style="background-color: rgba(13, 202, 240, 0.1); border: 2px dashed #0dcaf0; flex-direction: column;">
                                     <h4 class="text-info fw-bold mb-3"><i class="bi bi-wallet-fill me-2"></i> Fecho e Recebimento da O.S.</h4>
                                     <p class="text-white-50 mb-4 small">Guardar a OS como "Concluído" debitará as peças do estoque físico. <br>Se selecionar um método <b>Parcelado ou Boleto</b>, o sistema vai gerar Múltiplas Parcelas e Títulos Pendentes no Caixa para você dar baixa depois.</p>
                                     
@@ -417,11 +459,10 @@
                                         </div>
                                     </div>
 
-                                    <!-- PROGRAMAÇÃO DE REVISÃO (SAAS 10/10) -->
-                                    <h6 class="text-warning fw-bold mb-3"><i class="bi bi-calendar-heart me-1"></i> Programação de Retorno (Agenda Automática)</h6>
+                                    <h6 class="text-warning fw-bold mt-2 border-bottom border-secondary pb-2"><i class="bi bi-calendar-heart me-1"></i> Programação de Retorno (Agenda Automática)</h6>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label class="form-label text-white-50 small">Sugerir Data da Próxima Revisão</label>
+                                            <label class="form-label text-white-50 small">Data da Próxima Revisão</label>
                                             <input type="date" class="form-control bg-dark border-secondary text-white" id="osProxRevData">
                                         </div>
                                         <div class="col-md-6">
@@ -444,7 +485,7 @@
                         </div>
                         
                         <div class="mt-2 p-3 p-md-4 border-top border-secondary d-flex flex-column flex-sm-row justify-content-between align-items-center bg-black rounded-bottom gap-3">
-                            <button type="button" class="btn btn-outline-info fw-bold border-2 d-none w-100 w-sm-auto" id="btnGerarPdfOS"><i class="bi bi-file-pdf-fill me-1"></i> GERAR PDF P/ CLIENTE</button>
+                            <button type="button" class="btn btn-outline-info fw-bold border-2 d-none w-100 w-sm-auto" id="btnGerarPdfOS"><i class="bi bi-file-pdf-fill me-1"></i> GERAR PDF</button>
                             <button type="submit" class="btn btn-warning btn-lg px-4 px-md-5 py-3 fw-bold text-dark shadow-lg fs-5 w-100 w-sm-auto ms-auto" id="btnSalvarOS"><i class="bi bi-hdd-fill me-2"></i> REGISTRAR O.S.</button>
                         </div>
                     </form>
@@ -454,21 +495,23 @@
     </div>
 
     <!-- MODAIS SECUNDÁRIOS BLINDADOS -->
-    <div class="modal fade" id="modalCompra" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content shadow-lg border-primary"><div class="modal-header py-3 bg-dark border-bottom border-primary"><h5 class="modal-title text-white fs-5"><i class="bi bi-box-arrow-in-down me-2 text-primary"></i> Compra de Peças (Nota Entrada)</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-3 p-md-4 bg-dark custom-scrollbar"><form id="formCompra" onsubmit="salvarCompra(event)"><div class="row g-3 g-md-4 mb-4"><div class="col-12 col-md-6"><label class="form-label text-white-50">Fornecedor</label><select class="form-select bg-black border-secondary" id="compraForn" required></select></div><div class="col-12 col-md-6"><label class="form-label text-info">Nº da NF Original</label><input type="text" class="form-control fw-bold border-info text-info bg-black" id="compraNF" required></div></div><div class="mb-4 p-3 rounded bg-black border border-secondary"><label class="form-label text-white fw-bold">Auditoria / Observação Interna</label><textarea class="form-control bg-dark border-secondary" id="compraAuditoria" rows="2" placeholder="Ex: Fatura referente a encomenda urgente. Conferido por..."></textarea></div><div class="mb-5 p-3 p-md-4 rounded-4 border border-secondary" style="background-color: #1e2124;"><h6 class="text-white fw-bold mb-3 border-bottom border-secondary pb-3"><i class="bi bi-boxes me-2 text-primary"></i> Itens da NF (Entrarão Automaticamente no Estoque)</h6><div id="containerPecasCompra" class="d-flex flex-column gap-3 mb-4"></div><button type="button" class="btn btn-outline-primary fw-bold rounded-pill px-4 w-100 w-sm-auto" onclick="adicionarPecaCompra()">+ Inserir Artigo na NF</button></div><div class="row g-3 g-md-4 mb-4 p-3 p-md-4 rounded-4 mod-fin-block" style="background-color: rgba(220, 53, 69, 0.05); border: 1px solid #dc3545; display:none;"><div class="col-12 col-md-4"><label class="form-label text-white-50 small fw-bold">Data Base Pagamento</label><input type="date" class="form-control bg-dark border-danger text-white" id="compraDataVenc" title="Data inicial para contar os boletos"></div><div class="col-12 col-md-4"><label class="form-label fw-bold text-danger small">Liquidação da Compra</label><select class="form-select fw-bold border-danger text-danger bg-black" id="compraPgtoForma" onchange="verificarPgtoCompra()"><option value="Dinheiro">Dinheiro Físico</option><option value="Pix">PIX Imediato</option><option value="Cartão de Crédito - À Vista">Cartão Crédito à Vista</option><option value="Cartão de Crédito - Parcelado">Cartão de Crédito Parcelado (Gera Títulos)</option><option value="Boleto - À Vista">Boleto à Vista (Pendente)</option><option value="Boleto - Parcelado">Boleto Parcelado (Múltiplos Pendentes)</option></select></div><div class="col-12 col-md-4" id="compraDivParcelas" style="display:none;"><label class="form-label fw-bold text-danger small">Parcelas</label><select class="form-select bg-black border-danger text-danger" id="compraParcelas"><option value="2x">2x Parcelas</option><option value="3x">3x Parcelas</option><option value="4x">4x Parcelas</option><option value="6x">6x Parcelas</option><option value="12x">12x Parcelas</option><option value="30/60 Dias">30/60 Dias (2x)</option><option value="30/60/90 Dias">30/60/90 Dias (3x)</option></select></div><div class="col-12 mt-4 text-center text-md-end"><span class="text-white-50 fw-bold d-block mb-2">Total a Pagar na NF:</span><h2 class="text-danger fw-bold mb-0 display-6">R$ <span id="compraTotalVisual">0.00</span></h2><input type="hidden" id="compraTotalFinal" value="0"></div></div><button type="submit" class="btn btn-danger w-100 py-3 fs-5 fw-bold shadow-lg" id="btnSalvarCompra">FINALIZAR COMPRA E ESTOQUE</button></form></div></div></div></div>
+    <div class="modal fade" id="modalCompra" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content shadow-lg border-primary"><div class="modal-header py-3 bg-dark border-bottom border-primary"><h5 class="modal-title text-white fs-5"><i class="bi bi-box-arrow-in-down me-2 text-primary"></i> Compra de Peças (Nota Entrada)</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-3 p-md-4 bg-dark custom-scrollbar"><form id="formCompra" onsubmit="salvarCompra(event)"><div class="row g-3 g-md-4 mb-4"><div class="col-12 col-md-6"><label class="form-label text-white-50">Fornecedor</label><select class="form-select bg-black border-secondary" id="compraForn" required></select></div><div class="col-12 col-md-6"><label class="form-label text-info">Nº da NF Original</label><input type="text" class="form-control fw-bold border-info text-info bg-black" id="compraNF" required></div></div><div class="mb-4 p-3 rounded bg-black border border-secondary"><label class="form-label text-white fw-bold">Auditoria / Observação Interna</label><textarea class="form-control bg-dark border-secondary" id="compraAuditoria" rows="2" placeholder="Ex: Fatura referente a encomenda urgente. Conferido por..."></textarea></div><div class="mb-5 p-3 p-md-4 rounded-4 border border-secondary" style="background-color: #1e2124;"><h6 class="text-white fw-bold mb-3 border-bottom border-secondary pb-3"><i class="bi bi-boxes me-2 text-primary"></i> Itens da NF (Entrarão Automaticamente no Estoque)</h6><div id="containerPecasCompra" class="d-flex flex-column gap-3 mb-4"></div><button type="button" class="btn btn-outline-primary fw-bold rounded-pill px-4 w-100 w-sm-auto" onclick="adicionarPecaCompra()">+ Inserir Artigo na NF</button></div><div class="row g-3 g-md-4 mb-4 p-3 p-md-4 rounded-4 mod-fin-block" style="background-color: rgba(220, 53, 69, 0.05); border: 1px solid #dc3545; display:none;"><div class="col-12 col-md-4"><label class="form-label text-white-50 small fw-bold">Data Base Pagamento</label><input type="date" class="form-control bg-dark border-danger text-white" id="compraDataVenc" title="Data inicial para contar os boletos"></div><div class="col-12 col-md-4"><label class="form-label fw-bold text-danger small">Liquidação da Compra</label><select class="form-select fw-bold border-danger text-danger bg-black" id="compraPgtoForma" onchange="verificarPgtoCompra()"><option value="Dinheiro">Dinheiro Físico</option><option value="Pix">PIX Imediato</option><option value="Cartão de Crédito - À Vista">Cartão Crédito à Vista</option><option value="Cartão de Crédito - Parcelado">Cartão de Crédito Parcelado (Gera Títulos)</option><option value="Boleto - À Vista">Boleto à Vista (Pendente)</option><option value="Boleto - Parcelado">Boleto Parcelado (Múltiplos Pendentes)</option></select></div><div class="col-12 col-md-4" id="compraDivParcelas" style="display:none;"><label class="form-label fw-bold text-danger small">Parcelas / Vencimentos</label><select class="form-select bg-black border-danger text-danger" id="compraParcelas"><option value="2x">2x Parcelas</option><option value="3x">3x Parcelas</option><option value="4x">4x Parcelas</option><option value="6x">6x Parcelas</option><option value="12x">12x Parcelas</option><option value="30/60 Dias">30/60 Dias (2x)</option><option value="30/60/90 Dias">30/60/90 Dias (3x)</option></select></div><div class="col-12 mt-4 text-center text-md-end"><span class="text-white-50 fw-bold d-block mb-2">Total a Pagar na NF:</span><h2 class="text-danger fw-bold mb-0 display-6">R$ <span id="compraTotalVisual">0.00</span></h2><input type="hidden" id="compraTotalFinal" value="0"></div></div><button type="submit" class="btn btn-danger w-100 py-3 fs-5 fw-bold shadow-lg" id="btnSalvarCompra">FINALIZAR COMPRA E ESTOQUE</button></form></div></div></div></div>
+    
     <div class="modal fade" id="modalPeca" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Ficha de Artigo (Estoque)</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formPeca" onsubmit="salvarPeca(event)"><input type="hidden" id="pecaId"><div class="mb-3"><label class="form-label text-white-50">Designação (Nome da Peça)</label><input type="text" class="form-control form-control-lg text-warning fw-bold bg-black" id="pecaNome" required></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Custo Base (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black" id="pecaCusto" required></div><div class="col-6"><label class="form-label text-success fw-bold">PVP Sugerido (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black text-success fw-bold border-success" id="pecaVenda" required></div></div><div class="mb-4"><label class="form-label text-white-50">Quantidade no Estoque</label><input type="number" class="form-control form-control-lg bg-black text-center fw-bold" id="pecaQtd" required></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">CRIAR REFERÊNCIA</button></form></div></div></div></div>
     <div class="modal fade" id="modalAjusteStock" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="stockAdjTitle">Ajuste Manual de Estoque</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formAjuste" onsubmit="ajustarEstoque(event)"><input type="hidden" id="adjType"><div class="mb-3"><label class="form-label text-white-50">Selecione o Artigo</label><select class="form-select form-select-lg bg-black" id="adjItem" required></select></div><div class="mb-3"><label class="form-label text-white-50">Diferença de Quantidade</label><input type="number" class="form-control form-control-lg bg-black text-center fs-3 fw-bold" id="adjQtd" required min="1"></div><div class="mb-4"><label class="form-label text-white-50">Motivo / Notas de Auditoria</label><input type="text" class="form-control bg-black" id="adjNota" required placeholder="Ex: Peça danificada, quebra na oficina"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">EXECUTAR AJUSTE</button></form></div></div></div></div>
     
     <div class="modal fade" id="modalCliente" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Ficha de Cliente B2C</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formCliente" onsubmit="salvarCliente(event)"><input type="hidden" id="clienteId"><div class="mb-3"><label class="form-label text-white-50">Nome do Proprietário</label><input type="text" class="form-control form-control-lg bg-black" id="clienteNome" required></div><div class="mb-4"><label class="form-label text-white-50">Telefone / WhatsApp (Apenas Números)</label><input type="number" class="form-control form-control-lg bg-black" id="clienteContato" required></div><hr class="border-secondary mb-4"><h6 class="text-warning mb-3 fw-bold"><i class="bi bi-phone"></i> Portal Online do Cliente</h6><div class="mb-3"><label class="form-label text-white-50">E-mail de Login do Cliente</label><input type="email" class="form-control bg-black" id="clienteEmail" required></div><div class="mb-4"><label class="form-label text-white-50">PIN Gerado</label><div class="input-group"><input type="text" class="form-control bg-black text-warning fw-bold border-warning" id="clienteSenha" required><button class="btn btn-warning fw-bold text-dark px-4" type="button" onclick="document.getElementById('clienteSenha').value=Math.random().toString(36).slice(-6)">Gerar Novo PIN</button></div></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">SALVAR CLIENTE</button></form></div></div></div></div>
     <div class="modal fade" id="modalMoto" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Registo de Veículo</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form id="formMoto" onsubmit="salvarMoto(event)"><input type="hidden" id="motoId"><div class="mb-3"><label class="form-label text-white-50">Dono da Viatura (Cliente)</label><select class="form-select form-select-lg bg-black" id="motoDono" required></select></div><div class="mb-3"><label class="form-label text-white-50">Marca e Modelo</label><input type="text" class="form-control form-control-lg bg-black" id="motoModelo" required placeholder="Ex: Honda CG 160"></div><div class="mb-3"><label class="form-label text-white-50">Placa da Moto</label><input type="text" class="form-control form-control-lg bg-black text-uppercase fw-bold text-warning border-warning text-center" id="motoPlaca" required></div><div class="mb-4"><label class="form-label text-white-50">Quilometragem (KM)</label><input type="number" class="form-control form-control-lg bg-black" id="motoKm"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">CADASTRAR VEÍCULO</button></form></div></div></div></div>
     
+    <div class="modal fade" id="modalFuncionario" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Equipe Mecânica / Gerência</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFunc(event)"><div class="mb-3"><label class="form-label text-white-50">Nome do Colaborador</label><input type="text" class="form-control form-control-lg bg-black" id="funcNome" required></div><div class="mb-3"><label class="form-label text-white-50">Cargo Especialidade</label><input type="text" class="form-control form-control-lg bg-black" id="funcCargo" placeholder="Mecânico Chefe" required></div><div class="mb-4"><label class="form-label text-white-50">Comissão sobre Serviços (%)</label><input type="number" class="form-control form-control-lg bg-black text-success fw-bold" id="funcComissao" required placeholder="Ex: 40 para 40%"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">ADMITIR COLABORADOR</button></form></div></div></div></div>
+    <div class="modal fade" id="modalFornecedor" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Cadastro Fornecedor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFornecedor(event)"><div class="mb-3"><label class="form-label text-white-50">Razão Social</label><input type="text" class="form-control form-control-lg bg-black" id="fornNome" required></div><div class="mb-4"><label class="form-label text-white-50">O que ele fornece?</label><input type="text" class="form-control form-control-lg bg-black" id="fornCat" placeholder="Ex: Peças Originais Honda"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">SALVAR FORNECEDOR</button></form></div></div></div></div>
+    
     <!-- MODAL DE EDIÇÃO FINANCEIRA (AUDITORIA RÍGIDA) -->
     <div class="modal fade" id="modalEditFin" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-info"><div class="modal-header bg-dark border-bottom border-info"><h5 class="modal-title text-info"><i class="bi bi-pencil-square"></i> Editar Título Financeiro</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarEdicaoFin(event)"><input type="hidden" id="editFinId"><div class="mb-3"><label class="form-label text-white-50">Nova Data de Vencimento</label><input type="date" class="form-control bg-black text-white" id="editFinData" required></div><div class="mb-3"><label class="form-label text-white-50">Novo Valor Corrigido (R$)</label><input type="number" step="0.01" class="form-control bg-black fw-bold text-info" id="editFinValor" required></div><div class="mb-4"><label class="form-label text-danger fw-bold">Motivo da Alteração (Obrigatório para Auditoria)</label><input type="text" class="form-control bg-dark border-danger text-white" id="editFinMotivo" required placeholder="Ex: Juros cobrados, Erro de lançamento..."></div><button type="submit" class="btn btn-info w-100 py-3 fw-bold text-dark fs-5">ALTERAR E GRAVAR NO LOG</button></form></div></div></div></div>
     
-    <div class="modal fade" id="modalFinanceiro" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Lançamento de Caixa Avulso</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFinManual(event)"><div class="mb-3"><label class="form-label text-white-50">Operação</label><select class="form-select form-select-lg bg-black fw-bold border-secondary" id="finTipo"><option class="text-success" value="Entrada">Registar Receita</option><option class="text-danger" value="Saída">Declarar Despesa</option></select></div><div class="mb-3"><label class="form-label text-white-50">Justificativo Legal (O que é?)</label><input type="text" class="form-control form-control-lg bg-black" id="finDesc" required placeholder="Conta de Internet, Aluguel..."></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Valor Apurado (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black fw-bold border-secondary" id="finValor" required></div><div class="col-6"><label class="form-label text-white-50">Data</label><input type="date" class="form-control form-control-lg bg-black border-secondary" id="finData" required></div></div><div class="mb-3"><label class="form-label text-white-50">Notas / Auditoria Interna</label><textarea class="form-control bg-black border-secondary text-white" id="finNota" rows="2" placeholder="Detalhes da nota fiscal, quem autorizou..."></textarea></div><div class="row g-3 mb-4"><div class="col-12 col-md-6"><label class="form-label text-white-50">Forma Pagto</label><select class="form-select border-warning fw-bold bg-black text-white" id="finPgto"><option>Dinheiro</option><option>Pix</option><option>Cartão Crédito</option><option>Cartão Débito</option><option>Boleto / A Prazo</option><option>Transferência</option></select></div><div class="col-12 col-md-6"><label class="form-label text-white-50">Estado de Liquidação</label><select class="form-select border-warning text-warning fw-bold bg-black" id="finStatus"><option value="Pago">Liquidado na Hora (Pago)</option><option value="Pendente">Em Dívida / A Receber (Pendente)</option></select></div></div><button type="submit" class="btn btn-success w-100 py-3 fw-bold fs-5 text-dark">INJETAR NO CAIXA</button></form></div></div></div></div>
+    <div class="modal fade" id="modalFinanceiro" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Lançamento de Caixa Avulso</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFinManual(event)"><div class="mb-3"><label class="form-label text-white-50">Operação</label><select class="form-select form-select-lg bg-black fw-bold border-secondary" id="finTipo"><option class="text-success" value="Entrada">Registar Receita</option><option class="text-danger" value="Saída">Declarar Despesa</option></select></div><div class="mb-3"><label class="form-label text-white-50">Justificativo Legal (O que é?)</label><input type="text" class="form-control form-control-lg bg-black" id="finDesc" required placeholder="Conta de Internet, Aluguel..."></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Valor Apurado (R$)</label><input type="number" step="0.01" class="form-control form-control-lg bg-black fw-bold border-secondary" id="finValor" required></div><div class="col-6"><label class="form-label text-white-50">Data</label><input type="date" class="form-control form-control-lg bg-black border-secondary" id="finData" required></div></div><div class="mb-3"><label class="form-label text-white-50">Notas / Auditoria Interna</label><textarea class="form-control bg-black border-secondary text-white" id="finNota" rows="2" placeholder="Detalhes da despesa/receita, quem autorizou..."></textarea></div><div class="row g-3 mb-4"><div class="col-12 col-md-6"><label class="form-label text-white-50">Forma Pagto</label><select class="form-select border-warning fw-bold bg-black text-white" id="finPgto"><option>Dinheiro</option><option>Pix</option><option>Cartão Crédito</option><option>Cartão Débito</option><option>Boleto / A Prazo</option><option>Transferência</option></select></div><div class="col-12 col-md-6"><label class="form-label text-white-50">Estado de Liquidação</label><select class="form-select border-warning text-warning fw-bold bg-black" id="finStatus"><option value="Pago">Liquidado na Hora (Pago)</option><option value="Pendente">Em Dívida / A Receber (Pendente)</option></select></div></div><button type="submit" class="btn btn-success w-100 py-3 fw-bold fs-5 text-dark">INJETAR NO CAIXA</button></form></div></div></div></div>
     
     <div class="modal fade" id="modalAgenda" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-primary"><div class="modal-header bg-dark border-bottom border-primary"><h5 class="modal-title text-primary"><i class="bi bi-calendar-plus"></i> Agendar Revisão / Serviço</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarAgendamento(event)"><input type="hidden" id="agdId"><div class="mb-3"><label class="form-label text-white-50">Cliente Associado</label><select class="form-select bg-black text-white" id="agdCliente" required onchange="filtrarMotosAgenda()"></select></div><div class="mb-3"><label class="form-label text-white-50">Viatura Alvo</label><select class="form-select bg-black text-white" id="agdMoto"></select></div><div class="row g-3 mb-3"><div class="col-6"><label class="form-label text-white-50">Data Pretendida</label><input type="date" class="form-control bg-black text-white" id="agdData" required></div><div class="col-6"><label class="form-label text-white-50">Hora</label><input type="time" class="form-control bg-black text-white" id="agdHora" required></div></div><div class="mb-4"><label class="form-label text-white-50">Motivo / Operação Prevista</label><textarea class="form-control bg-black text-white" id="agdMotivo" rows="2" placeholder="Revisão dos 10mil, Troca óleo..." required></textarea></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-5">BLOQUEAR HORÁRIO DA AGENDA</button></form></div></div></div></div>
-    <div class="modal fade" id="modalFuncionario" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Equipe Mecânica</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFunc(event)"><div class="mb-3"><label class="form-label text-white-50">Nome do Colaborador</label><input type="text" class="form-control form-control-lg bg-black" id="funcNome" required></div><div class="mb-4"><label class="form-label text-white-50">Cargo Especialidade</label><input type="text" class="form-control form-control-lg bg-black" id="funcCargo" placeholder="Mecânico Chefe"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">ADMITIR COLABORADOR</button></form></div></div></div></div>
-    <div class="modal fade" id="modalFornecedor" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Cadastro Fornecedor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-dark"><form onsubmit="salvarFornecedor(event)"><div class="mb-3"><label class="form-label text-white-50">Razão Social</label><input type="text" class="form-control form-control-lg bg-black" id="fornNome" required></div><div class="mb-4"><label class="form-label text-white-50">O que ele fornece?</label><input type="text" class="form-control form-control-lg bg-black" id="fornCat" placeholder="Ex: Peças Originais Honda"></div><button type="submit" class="btn btn-primary w-100 py-3 fw-bold">SALVAR FORNECEDOR</button></form></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -507,6 +550,8 @@
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active')); 
             try { event.target.classList.add('active'); } catch(e){} 
             if(id === 'dashboard') calcularEstatisticasTotais(); 
+            if(id === 'funcionarios') renderComissoes();
+            if(id === 'auditoria') renderAuditoriaGlobal();
         }
 
         // EXPORTAR RELATÓRIOS (EXCEL/CSV)
@@ -544,12 +589,9 @@
         }
 
         // GERAR PDF DA O.S (JSPDF)
-        window.gerarPdfOS = function() {
-            const idOs = $v('osId');
-            if(!idOs) return showToast("Salve a OS primeiro para gerar o PDF.", "error");
-            
+        window.gerarPdfOS = function(idOs) {
             const os = dbServicos.find(x=>x.id===idOs);
-            if(!os) return;
+            if(!os) return showToast("Erro ao localizar OS. Salve a OS primeiro.", "error");
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -558,12 +600,10 @@
             const mt = dbMotos.find(x=>x.id===os.motoId);
             const nomeOficina = sessionStorage.getItem('evo_tenant_nome') || 'Evolution Oficina';
 
-            // Cabeçalho
             doc.setFontSize(18);
             doc.setTextColor(230, 81, 0); 
             doc.text(`Ordem de Servico - ${nomeOficina}`, 14, 20);
             
-            // Dados
             doc.setFontSize(11);
             doc.setTextColor(0, 0, 0);
             doc.text(`ID OS: ${os.id.substring(0,8).toUpperCase()}`, 14, 30);
@@ -579,23 +619,25 @@
 
             doc.setFontSize(10);
             doc.setFont("helvetica", "bold");
-            doc.text("Descricao do Servico:", 14, 60);
+            doc.text("Descricao do Problema / Servico:", 14, 60);
             doc.setFont("helvetica", "normal");
             const splitDesc = doc.splitTextToSize(os.desc || '', 180);
             doc.text(splitDesc, 14, 66);
             
             let finalY = 66 + (splitDesc.length * 5) + 5;
 
-            // Tabela Peças
             if(os.pecas && os.pecas.length > 0) {
                 const tableData = os.pecas.map(p => [p.qtd, p.nome]);
                 doc.autoTable({
-                    startY: finalY, head: [['Qtd', 'Item / Peca Aplicada']], body: tableData, theme: 'grid', headStyles: { fillColor: [52, 58, 64] }
+                    startY: finalY,
+                    head: [['Qtd', 'Item / Peca Aplicada']],
+                    body: tableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [52, 58, 64] }
                 });
                 finalY = doc.lastAutoTable.finalY + 10;
             }
 
-            // Totais
             doc.setFontSize(12);
             doc.text(`Mao de Obra: R$ ${os.maoObra ? os.maoObra.toFixed(2) : '0.00'}`, 14, finalY);
             finalY += 8;
@@ -603,15 +645,17 @@
             doc.text(`TOTAL DA O.S.: R$ ${os.total.toFixed(2)}`, 14, finalY);
             doc.setFont("helvetica", "normal");
 
-            // Links Cloudinary
             if(os.media && os.media.length > 0) {
                 finalY += 15;
                 doc.setFontSize(10);
                 doc.setFont("helvetica", "bold");
-                doc.text("Anexos e Provas Visuais (Acesse os links):", 14, finalY);
+                doc.text("Anexos Virtuais e Provas Visuais (Acesse os links):", 14, finalY);
                 doc.setFont("helvetica", "normal");
                 doc.setTextColor(0, 0, 255); 
-                os.media.forEach((m, idx) => { finalY += 6; doc.text(`Anexo ${idx+1}: ${m.url}`, 14, finalY); });
+                os.media.forEach((m, idx) => {
+                    finalY += 6;
+                    doc.text(`Anexo ${idx+1}: ${m.url}`, 14, finalY);
+                });
                 doc.setTextColor(0, 0, 0);
             }
 
@@ -621,7 +665,7 @@
             doc.save(`OS_${mt?mt.placa:'SemPlaca'}_${os.id.substring(0,6)}.pdf`);
         };
 
-        // FIREBASE MASTER CONFIG & REALTIME SYNCS (COM PROTEÇÃO NULL)
+        // FIREBASE MASTER CONFIG & REALTIME SYNCS
         const firebaseConfig = { apiKey: "AIzaSyAq6gEJlUGuzJmrNf-lVY0cqdOWsJ9xNeo", authDomain: "evolution-179d0.firebaseapp.com", projectId: "evolution-179d0", storageBucket: "evolution-179d0.firebasestorage.app", messagingSenderId: "349908951188", appId: "1:349908951188:web:457832d484a83f45b19481" };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
@@ -639,18 +683,15 @@
             db.collection('motos').where('tenantId', '==', tenantId).onSnapshot(s => { dbMotos = s.docs.map(d=>({id:d.id,...d.data()})); renderMotos(); renderAgendamentos(); });
             db.collection('funcionarios').where('tenantId', '==', tenantId).onSnapshot(s => { dbFuncionarios = s.docs.map(d=>({id:d.id,...d.data()})); renderFuncionarios(); });
             db.collection('fornecedores').where('tenantId', '==', tenantId).onSnapshot(s => { dbFornecedores = s.docs.map(d=>({id:d.id,...d.data()})); renderFornecedores(); });
-            db.collection('servicos').where('tenantId', '==', tenantId).onSnapshot(s => { dbServicos = s.docs.map(d=>({id:d.id,...d.data()})); renderKanban(); calcularEstatisticasTotais(); });
-            db.collection('financeiroItems').where('tenantId', '==', tenantId).onSnapshot(s => { dbFinanceiro = s.docs.map(d=>({id:d.id,...d.data()})); renderCaixa(); calcularEstatisticasTotais(); });
+            db.collection('servicos').where('tenantId', '==', tenantId).onSnapshot(s => { dbServicos = s.docs.map(d=>({id:d.id,...d.data()})); renderKanban(); calcularEstatisticasTotais(); renderComissoes(); });
+            db.collection('financeiroItems').where('tenantId', '==', tenantId).onSnapshot(s => { dbFinanceiro = s.docs.map(d=>({id:d.id,...d.data()})); renderCaixa(); calcularEstatisticasTotais(); renderAuditoriaGlobal(); });
             db.collection('agendamentos').where('tenantId', '==', tenantId).onSnapshot(s => { dbAgendamentos = s.docs.map(d=>({id:d.id,...d.data()})); renderAgendamentos(); calcularEstatisticasTotais(); });
-            
-            // Nova Coleção de Compras para Histórico Consistente
             db.collection('compras').where('tenantId', '==', tenantId).onSnapshot(s => { dbCompras = s.docs.map(d=>({id:d.id,...d.data()})); renderCompras(); });
             
             db.collection('mensagens').where('tenantId', '==', tenantId).onSnapshot(s => {
                 dbMensagens = s.docs.map(d=>({id:d.id,...d.data()}));
                 dbMensagens.sort((a,b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
                 
-                // Lógica de Badge (Notificações Novas)
                 let naoLidas = 0;
                 dbMensagens.forEach(m => { if(m.sender === 'cliente' && !m.lidaAdmin) naoLidas++; });
                 if($('chatBadgeGlobal')) {
@@ -672,6 +713,9 @@
             if($('kpiStockCritico')) $('kpiStockCritico').innerText = dbEstoque.filter(e => e.qtd < 3).length;
             if($('kpiBoletos')) $('kpiBoletos').innerText = dbFinanceiro.filter(f => f.status === 'Pendente').length;
             
+            const tr = new Date(); tr.setHours(0,0,0,0);
+            if($('kpiAgendamentosHoje')) $('kpiAgendamentosHoje').innerText = dbAgendamentos.filter(a => new Date(a.data) >= tr && a.status !== 'Cancelado').length;
+
             const rec = dbServicos.slice(-5).reverse();
             if($('listaAtividadesRecentes')) {
                 $('listaAtividadesRecentes').innerHTML = rec.length ? rec.map(s => {
@@ -715,7 +759,7 @@
         }
 
         // =========================================================================
-        // INVENTÁRIO
+        // INVENTÁRIO COM NOTAS DE AUDITORIA
         // =========================================================================
         function renderEstoque() {
             if($('tabelaEstoque')) $('tabelaEstoque').innerHTML = dbEstoque.map(i=>`<tr><td>${i.nome}</td><td>R$ ${i.custo.toFixed(2)}</td><td class="text-success fw-bold fs-6">R$ ${i.venda.toFixed(2)}</td><td><span class="badge ${i.qtd>2?'bg-primary':'bg-danger px-3 shadow'} fs-6">${i.qtd}</span></td><td><div class="d-flex gap-2"><button class="btn btn-sm btn-outline-warning border-0 text-warning shadow-sm" onclick="prepararModalPeca('edit','${i.id}')" data-bs-toggle="modal" data-bs-target="#modalPeca"><i class="bi bi-pencil fs-5"></i></button> <button class="btn btn-sm btn-outline-danger border-0 text-danger shadow-sm" onclick="if(confirm('Erradicar artigo permanentemente?')) db.collection('estoqueItems').doc('${i.id}').delete()"><i class="bi bi-trash fs-5"></i></button></div></td></tr>`).join('');
@@ -824,6 +868,29 @@
         }
 
         // =========================================================================
+        // FUNCIONÁRIOS E COMISSÕES
+        // =========================================================================
+        function renderFuncionarios() { 
+            if($('tabelaFuncionarios')) $('tabelaFuncionarios').innerHTML = dbFuncionarios.map(f=>`<tr><td class="fw-bold"><i class="bi bi-person-fill-gear me-2 text-primary fs-5"></i> ${f.nome}</td><td><span class="badge bg-secondary px-3 py-2 fs-6 shadow-sm border border-light">${f.funcao}</span></td><td>${f.comissao || 0}%</td><td><button class="btn btn-sm btn-outline-danger border-0" onclick="db.collection('funcionarios').doc('${f.id}').delete()"><i class="bi bi-trash fs-5"></i></button></td></tr>`).join(''); 
+            if($('osMec')) $('osMec').innerHTML='<option value="">A Oficina fará a triagem</option>'+dbFuncionarios.map(f=>`<option value="${f.id}">${f.nome} (${f.comissao||0}%)</option>`).join(''); 
+        }
+        async function salvarFunc(e) { e.preventDefault(); try { await db.collection('funcionarios').add({tenantId, nome:$v('funcNome'), funcao:$v('funcCargo'), comissao:parseFloat($v('funcComissao'))||0}); const mod=bootstrap.Modal.getInstance($('modalFuncionario')); if(mod) mod.hide(); showToast("Membro Adicionado à Equipe.", "success"); } catch(err) { showToast(err.message, "error"); } }
+        
+        function renderComissoes() {
+            if(!$('boxComissoes')) return;
+            const comissoesMap = {};
+            dbServicos.filter(s => s.status === 'Concluido' && s.comissaoGerada).forEach(os => {
+                if(!comissoesMap[os.mecId]) comissoesMap[os.mecId] = 0;
+                comissoesMap[os.mecId] += os.comissaoGerada;
+            });
+            const html = Object.keys(comissoesMap).map(mId => {
+                const mec = dbFuncionarios.find(f => f.id === mId);
+                return `<div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-2 mb-2"><span class="text-white fw-bold"><i class="bi bi-person-badge text-info me-2"></i>${mec?mec.nome:'Desconhecido'}</span><span class="text-success fw-bold fs-5">R$ ${comissoesMap[mId].toFixed(2)}</span></div>`;
+            }).join('');
+            $('boxComissoes').innerHTML = html || '<p class="text-white-50 small">Nenhuma O.S. finalizada com mecânico comissionado ainda.</p>';
+        }
+
+        // =========================================================================
         // COMPRAS DE PEÇAS (NOTAS DE ENTRADA E BOLETOS FRACIONADOS COM AUDITORIA)
         // =========================================================================
         function renderFornecedores() { if($('tabelaFornecedores')) $('tabelaFornecedores').innerHTML = dbFornecedores.map(f=>`<tr><td class="fw-bold">${f.nome}</td><td><span class="text-white-50">${f.cat}</span></td><td><button class="btn btn-sm btn-outline-danger border-0" onclick="db.collection('fornecedores').doc('${f.id}').delete()"><i class="bi bi-trash fs-5"></i></button></td></tr>`).join(''); if($('compraForn')) $('compraForn').innerHTML='<option value="">A quem faturou?</option>'+dbFornecedores.map(f=>`<option value="${f.id}">${f.nome}</option>`).join(''); }
@@ -880,6 +947,7 @@
                     if(pEst) await db.collection('estoqueItems').doc(i.id).update({qtd: pEst.qtd + i.qtd}); 
                 }
 
+                // GRAVA A NOTA DE ENTRADA (COMPRA) NA NOVA COLEÇÃO PARA AUDITORIA PERMANENTE
                 await db.collection('compras').add({
                     tenantId, fornecedorId: forId, fornecedorNome: n, nf: nf, total: total, data: dt, auditoria: `Por: ${userLogin} | Obs: ${notasAud}`, itens: itens, pagamento: fp
                 });
@@ -924,7 +992,7 @@
         }
 
         // =========================================================================
-        // O CORAÇÃO: O.S. KANBAN COM BUSCA, LINHA DO TEMPO (AUDITORIA) E PDF
+        // O CORAÇÃO: O.S. KANBAN COM BUSCA E LINHA DO TEMPO
         // =========================================================================
         function renderKanban() {
             const termoBusca = ($('searchOS') ? $('searchOS').value.toLowerCase().trim() : '');
@@ -935,6 +1003,7 @@
                 const mt = dbMotos.find(x=>x.id===os.motoId);
                 const placa = mt ? mt.placa.toLowerCase() : '';
                 const nomeCliente = cl ? cl.nome.toLowerCase() : '';
+                
                 if(termoBusca === '' || placa.includes(termoBusca) || nomeCliente.includes(termoBusca)) {
                     if(cols[os.status]) cols[os.status].push(os); 
                 }
@@ -1062,6 +1131,16 @@
                 const fp = $v('osPgtoForma'); 
                 const parcelasText = $v('osPgtoParcelas');
 
+                // COMISSÃO DO MECÂNICO (SE SELECIONADO)
+                let valorComissao = 0;
+                const mecId = $v('osMec');
+                if(mecId) {
+                    const mDB = dbFuncionarios.find(f => f.id === mecId);
+                    if(mDB && mDB.comissao) {
+                        valorComissao = parseFloat($v('osMaoObra')) * (parseFloat(mDB.comissao) / 100);
+                    }
+                }
+
                 // LINHA DO TEMPO (AUDITORIA DA O.S.)
                 let newTimeline = osAtualParaSalvar && osAtualParaSalvar.timeline ? [...osAtualParaSalvar.timeline] : [];
                 if(!id) {
@@ -1071,7 +1150,7 @@
                 }
 
                 const d = { 
-                    tenantId, clienteId:$v('osCliente'), motoId:$v('osMoto'), desc:$v('osDescricao'), status:sts, mecId:$v('osMec'), data:$v('osData'), maoObra:parseFloat($v('osMaoObra')), total:tot, pecas:arrP, media: mediaArr, notasAuditoria: notasAud,
+                    tenantId, clienteId:$v('osCliente'), motoId:$v('osMoto'), desc:$v('osDescricao'), status:sts, mecId: mecId, comissaoGerada: valorComissao, data:$v('osData'), maoObra:parseFloat($v('osMaoObra')), total:tot, pecas:arrP, media: mediaArr, notasAuditoria: notasAud,
                     timeline: newTimeline, pagamento: { forma: fp, parcelas: parcelasText },
                     check: { comb:$v('chkComb'), painel:$('chkPainel')?$('chkPainel').checked:false, pneus:$('chkPneusOk')?$('chkPneusOk').checked:false, care:$('chkCare')?$('chkCare').checked:false, obs:$v('chkObs'), pneuDia: parseInt($v('chkPneuDia'))||0, pneuTra: parseInt($v('chkPneuTra'))||0 } 
                 };
@@ -1137,7 +1216,7 @@
                         showToast("Veículo Entregue. O.S. e Títulos criados com Sucesso!", "success");
 
                         // Mensagem Automática no Chat de Pronta!
-                        await db.collection('mensagens').add({tenantId: tenantId, clienteId: $v('osCliente'), sender: 'admin', text: `✅ A sua viatura está pronta para ser retirada! O valor total fechou em R$ ${tot.toFixed(2)}.`, timestamp: firebase.firestore.FieldValue.serverTimestamp()});
+                        await db.collection('mensagens').add({tenantId: tenantId, clienteId: $v('osCliente'), sender: 'admin', text: `✅ A sua viatura está pronta para ser retirada! O valor total fechou em R$ ${tot.toFixed(2)}.`, lidaCliente: false, timestamp: firebase.firestore.FieldValue.serverTimestamp()});
                         
                         // Notificação WhatsApp
                         const cZap = dbClientes.find(x=>x.id===$v('osCliente'));
@@ -1205,12 +1284,27 @@
         }
 
         // =========================================================================
+        // AUDITORIA GLOBAL LOGS
+        // =========================================================================
+        function renderAuditoriaGlobal() {
+            if(!$('tabelaAuditoria')) return;
+            const auditoriaLogs = dbFinanceiro.filter(f => f.tipo === 'Auditoria');
+            if(auditoriaLogs.length === 0) {
+                $('tabelaAuditoria').innerHTML = '<tr><td colspan="2" class="text-center text-white-50">Nenhum log de auditoria encontrado.</td></tr>';
+            } else {
+                $('tabelaAuditoria').innerHTML = auditoriaLogs.sort((a,b)=>new Date(b.data)-new Date(a.data)).map(a => {
+                    return `<tr><td class="text-white-50" style="width:150px;">${new Date(a.data).toLocaleDateString('pt-PT')}</td><td><strong class="text-warning">${a.descricao}</strong><br><small class="text-white-50">${a.auditoriaNota}</small></td></tr>`;
+                }).join('');
+            }
+        }
+
+        // =========================================================================
         // CHAT CRM BLINDADO (COM ANEXOS DE ARQUIVO E ÁUDIO) E LEMBRETES (BADGE)
         // =========================================================================
         let chatActiveClienteId = null;
         function abrirChat(id, nm) {
             chatActiveClienteId=id; 
-            if($('chatNomeCliente')) $('chatNomeCliente').innerHTML = `<span class="text-white">Linha Segura Ativa com:</span> <b class="text-accent fs-5" style="color:var(--bs-accent)">${nm}</b>`; 
+            if($('chatNomeCliente')) $('chatNomeCliente').innerHTML = `<span class="text-white">Linha Segura Ativa com:</span> <b class="text-accent fs-4" style="color:var(--bs-accent)">${nm}</b>`; 
             if($('chatAreaInput')) $('chatAreaInput').style.display='flex'; 
             const a=$('chatAreaMsg'); if(!a) return; a.innerHTML='';
             
@@ -1291,7 +1385,7 @@
                 - Se o usuário perguntar sobre uma placa que não está no JSON, responda EXATAMENTE: "Não encontrei nenhum registro dessa placa no nosso sistema. Por favor, verifique se a viatura foi cadastrada."
                 - Aja como auditor de garantias: se perguntarem se um defeito é recorrente, olhe o JSON 'historico_ordens_de_servico' e veja se a mesma placa reclamou do mesmo defeito ou trocou a mesma peça recentemente. Responda de forma profissional e direta em português.`;
                 
-                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: sysPrompt }] }, generationConfig: { temperature: 0.0 } }; // Temperature 0.0 minimiza alucinação.
+                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: sysPrompt }] }, generationConfig: { temperature: 0.0 } };
 
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
