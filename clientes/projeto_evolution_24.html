@@ -172,6 +172,7 @@
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> A LER A BASE DE DADOS...'; btn.disabled = true;
 
             try {
+                // Segurança Anti-Índice
                 const snapshot = await db.collection('clientes').where('email', '==', em).get();
                 if (snapshot.empty) {
                     alert("Ops! O E-mail não foi localizado. Fale com a oficina.");
@@ -224,7 +225,7 @@
                         let content = m.text;
                         if(m.fileUrl) {
                             if(m.fileType === 'video' || m.fileUrl.includes('.mp4')) content += `<br><video src="${m.fileUrl}" controls style="max-width:100%; border-radius:8px; margin-top:5px;"></video>`;
-                            else if(m.fileType === 'audio' || m.fileUrl.includes('.mp3') || m.url.includes('.ogg')) content += `<br><audio src="${m.fileUrl}" controls style="max-width:100%; margin-top:5px;"></audio>`;
+                            else if(m.fileType === 'audio' || m.fileUrl.includes('.mp3') || m.fileUrl.includes('.ogg')) content += `<br><audio src="${m.fileUrl}" controls style="max-width:100%; margin-top:5px;"></audio>`;
                             else content += `<br><img src="${m.fileUrl}" style="max-width:100%; border-radius:8px; margin-top:5px; cursor:pointer;" onclick="window.open('${m.fileUrl}','_blank')">`;
                         }
 
@@ -407,7 +408,13 @@
             let mediaHtml = '';
             if(os.media && os.media.length > 0) {
                 mediaHtml = `<h5 class="text-info fw-bold mt-5 mb-3 border-bottom border-secondary pb-2"><i class="bi bi-cloud-arrow-down-fill me-2"></i> Galeria e Provas (Em Direto da Bancada)</h5><div class="media-grid">` + os.media.map(m => {
-                    return m.type === 'video' ? `<video src="${m.url}" controls class="shadow-sm"></video>` : `<img src="${m.url}" onclick="window.open('${m.url}','_blank')" title="Ampliar a Foto" class="shadow-sm">`;
+                    if (m.type === 'video' || m.url.includes('.mp4')) {
+                        return `<video src="${m.url}" controls class="shadow-sm"></video>`;
+                    } else if (m.type === 'audio' || m.url.includes('.mp3') || m.url.includes('.ogg')) {
+                        return `<audio src="${m.url}" controls style="width: 100%;"></audio>`;
+                    } else {
+                        return `<img src="${m.url}" onclick="window.open('${m.url}','_blank')" title="Ampliar a Foto" class="shadow-sm">`;
+                    }
                 }).join('') + `</div>`;
             } else {
                 mediaHtml = `<h5 class="text-info fw-bold mt-5 mb-3 border-bottom border-secondary pb-2"><i class="bi bi-camera-video-off me-2"></i> Provas Visuais</h5><p class="text-white-50 fst-italic">O Mecânico não tirou nenhuma foto da sua mota até ao momento.</p>`;
