@@ -141,6 +141,7 @@
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> A LER A BASE DE DADOS...'; btn.disabled = true;
 
             try {
+                // Segurança Anti-Índice
                 const snapshot = await db.collection('clientes').where('email', '==', em).get();
                 if (snapshot.empty) {
                     alert("Ops! O E-mail não foi localizado. Fale com a oficina.");
@@ -197,7 +198,7 @@
                 // Injeta mensagem no chat para alertar o admin
                 await db.collection('mensagens').add({
                     tenantId: meuTenant, clienteId: idMeuCliente, sender: 'cliente',
-                    text: `✅ ORÇAMENTO APROVADO: Aprovei a intervenção referente a "${desc}" no valor de R$ ${parseFloat(total).toFixed(2)}. Podem avançar para o Elevador!`,
+                    text: `✅ ORÇAMENTO APROVADO: O cliente aprovou a intervenção referente a "${desc}" no valor de R$ ${parseFloat(total).toFixed(2)}. Podem avançar para o Elevador!`,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 alert("Sucesso! Orçamento aprovado e oficina notificada.");
